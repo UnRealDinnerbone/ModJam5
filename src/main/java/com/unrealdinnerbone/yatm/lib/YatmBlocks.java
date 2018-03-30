@@ -1,6 +1,6 @@
 package com.unrealdinnerbone.yatm.lib;
 
-import com.unrealdinnerbone.yatm.block.BlockTeleporter;
+import com.unrealdinnerbone.yatm.common.block.BlockTeleporter;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)

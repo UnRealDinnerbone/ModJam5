@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yatm.block;
+package com.unrealdinnerbone.yatm.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -38,5 +38,10 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityTeleporter();
+    }
+
+    @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yatm.event.register;
+package com.unrealdinnerbone.yatm.common.event.register;
 
 import com.unrealdinnerbone.yatm.lib.Reference;
 import com.unrealdinnerbone.yatm.lib.YatmBlocks;
