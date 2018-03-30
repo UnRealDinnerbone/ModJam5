@@ -1,0 +1,20 @@
+[
+  {
+    "modid": "yatm",
+    "name": "Yatm",
+    "description": "Another Telrpoter Mod",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "UnRealDinnerbone"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": [
+      ""
+    ]
+  }
+]
