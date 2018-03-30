@@ -1,9 +1,14 @@
-package com.unrealdinnerbone.yatm.data;
+package com.unrealdinnerbone.yatm.world;
 
+import com.unrealdinnerbone.yatm.lib.DoubleStoreObject;
 import com.unrealdinnerbone.yatm.lib.Reference;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
+
+import java.util.List;
 
 public class YatmWorldSaveData extends WorldSavedData {
 
@@ -17,13 +22,16 @@ public class YatmWorldSaveData extends WorldSavedData {
         super(s);
     }
 
-    public static YatmWorldSaveData get(World world) {
-        // The IS_GLOBAL constant is there for clarity, and should be simplified into the right branch.
-        MapStorage storage = IS_GLOBAL ? world.getMapStorage() : world.getPerWorldStorage();
-        ExampleWorldSavedData instance = (ExampleWorldSavedData) storage.getOrLoadData(ExampleWorldSavedData.class, DATA_NAME);
+    List<DoubleStoreObject<BlockPos, Integer>> doubleStoreObjects;
 
+
+
+
+    public static YatmWorldSaveData get(World world) {
+        MapStorage storage = world.getMapStorage();
+        YatmWorldSaveData instance = (YatmWorldSaveData) storage.getOrLoadData(YatmWorldSaveData.class, DATA_NAME);
         if (instance == null) {
-            instance = new ExampleWorldSavedData();
+            instance = new YatmWorldSaveData();
             storage.setData(DATA_NAME, instance);
         }
         return instance;
