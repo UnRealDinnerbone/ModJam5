@@ -1,15 +1,11 @@
 package com.unrealdinnerbone.yatm;
 
 import com.unrealdinnerbone.yatm.lib.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import com.unrealdinnerbone.yatm.packet.PacketHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(
         modid = Reference.MOD_ID,
@@ -25,7 +21,7 @@ public class Yatm {
 
     @Mod.EventHandler
     public void preinit(FMLPreInitializationEvent event) {
-
+        new PacketHandler();
     }
 
 
