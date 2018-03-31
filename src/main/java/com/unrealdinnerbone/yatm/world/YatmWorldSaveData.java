@@ -1,6 +1,7 @@
 package com.unrealdinnerbone.yatm.world;
 
 import com.unrealdinnerbone.yatm.lib.Reference;
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -8,6 +9,7 @@ import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class YatmWorldSaveData extends WorldSavedData {
             }
             if(id != 0 && !this.postions.get(id).contains(blockPos))  {
                 this.postions.get(id).add(blockPos);
+                System.out.println("Added BlockPos " + blockPos + " with id" + id);
             }
         }
     }
@@ -45,6 +48,24 @@ public class YatmWorldSaveData extends WorldSavedData {
         }else {
             return new ArrayList<>();
         }
+    }
+
+    public int removeBlockPos(BlockPos blockPos) {
+        if(hasBlockPos(blockPos)) {
+            for(int key: postions.keySet()) {
+                List<BlockPos> posList = postions.get(key);
+                if(posList.contains(blockPos)) {
+                    posList.remove(blockPos);
+                    System.out.println("Removed BlockPos " + blockPos + " form id" + key);
+                    return key;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public boolean hasBlockPos(BlockPos blockPos) {
+        return postions.values().stream().flatMap(Collection::stream).anyMatch(blockPos1 -> blockPos.toLong() == blockPos1.toLong());
     }
 
     public BlockPos getOtherPosFormIdAndPos(int id, BlockPos pos) {
@@ -77,10 +98,19 @@ public class YatmWorldSaveData extends WorldSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-
+        postions = new HashMap<>();
         for(String key: nbt.getKeySet()) {
-            NBTTagCompound tagCompound = nbt.getCompoundTag(key);
-           //Todo
+            if(key.startsWith("tpNumber_")) {
+                NBTTagCompound tagCompound = nbt.getCompoundTag(key);
+                List<BlockPos> posList = new ArrayList<>();
+                for(String key2: tagCompound.getKeySet()) {
+                    long number = tagCompound.getLong(key2);
+                    posList.add(BlockPos.fromLong(number));
+                }
+                String number = key.replace("tpNumber_", "");
+                int x = Integer.parseInt(number);
+                postions.put(x, posList);
+            }
 
         }
     }
@@ -98,7 +128,7 @@ public class YatmWorldSaveData extends WorldSavedData {
             for(BlockPos pos: postions.get(key)) {
                 tagCompound.setLong("" + count++, pos.toLong());
             }
-            compound.setTag("" + key, tagCompound);
+            compound.setTag("tpNumber_" + key, tagCompound);
         }
         return compound;
     }

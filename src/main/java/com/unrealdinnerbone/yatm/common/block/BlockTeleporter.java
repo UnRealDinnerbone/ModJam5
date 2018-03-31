@@ -35,6 +35,8 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
     public BlockTeleporter() {
         super(Material.GROUND, MapColor.CYAN);
         setUnlocalizedName("teleporter");
+        this.fullBlock = false;
+        this.setLightOpacity(255);
 
     }
 
@@ -68,8 +70,6 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
             TileEntityTeleporter tileEntityTeleporter = (TileEntityTeleporter) tileEntity;
             if (playerIn instanceof EntityPlayerMP) {
                 PacketHandler.INSTANCE.sendTo(new PacketOpenSetFrequencyGUI(pos, tileEntityTeleporter.getID()), (EntityPlayerMP) playerIn);
-            } else {
-                System.out.println("HUH?");
             }
         }
         return true;
@@ -77,6 +77,11 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
 
     int count = 0;
     private boolean particlesOn = false;
+
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        YatmWorldSaveData.get(worldIn).removeBlockPos(pos);
+    }
 
     @Override
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
@@ -91,7 +96,7 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
                     particlesOn = true;
                     if(count >= 20) {
                         BlockPos blockPos = YatmWorldSaveData.get(worldIn).getOtherPosFormIdAndPos(tileEntityTeleporter.getID(), pos);
-                        TelporterHelper.performTeleport(entityPlayer, 0, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                        TelporterHelper.performTeleport(entityPlayer, 0, blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
                         count = 0;
                         particlesOn = false;
                     }

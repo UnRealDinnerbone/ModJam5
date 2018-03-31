@@ -3,14 +3,14 @@
   "defaults": {
     "textures": {
       "particle": "minecraft:blocks/stone_slab_top",
-      "down": "minecraft:blocks/stone_slab_top",
-      "up": "yatm:blocks/teleporter_top",
+      "bottom": "minecraft:blocks/stone_slab_top",
+      "top": "yatm:blocks/teleporter_top",
       "east": "minecraft:blocks/stone_slab_side",
       "west": "minecraft:blocks/stone_slab_side",
       "north": "minecraft:blocks/stone_slab_side",
       "south": "minecraft:blocks/stone_slab_side"
     },
-    "model": "cube_all",
+    "model": "yatm:teleporter",
     "transform": "forge:default-block"
   },
   "variants": {

@@ -13,6 +13,10 @@ public class GUISelectFrequency extends GuiScreen {
 
 
     private int id;
+    private BlockPos pos;
+
+    private final int START_ID;
+    private final BlockPos START_POS;
 
     private GUIButtonFrequency ADD_1;
     private GUIButtonFrequency ADD_10;
@@ -23,12 +27,14 @@ public class GUISelectFrequency extends GuiScreen {
 
     private GuiTextField frequency;
 
-    private BlockPos pos;
+
 
     public GUISelectFrequency(BlockPos pos, int id) {
         super();
         this.pos = pos;
         this.id = id;
+        this.START_POS = pos;
+        this.START_ID = id;
     }
 
     @Override
@@ -64,7 +70,9 @@ public class GUISelectFrequency extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(pos, id));
+        if(START_ID != id) {
+            PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(pos, id, START_POS, START_ID));
+        }
     }
 
     @Override

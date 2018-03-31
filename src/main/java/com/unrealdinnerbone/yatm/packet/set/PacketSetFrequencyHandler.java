@@ -1,5 +1,6 @@
 package com.unrealdinnerbone.yatm.packet.set;
 
+import com.unrealdinnerbone.yatm.Yatm;
 import com.unrealdinnerbone.yatm.common.block.TileEntityTeleporter;
 import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,8 +22,10 @@ public class PacketSetFrequencyHandler implements IMessageHandler<PacketSetFrequ
                 TileEntityTeleporter telporter = (TileEntityTeleporter) tileEntity;
                 telporter.setID(message.getID());
                 telporter.markDirty();
-                YatmWorldSaveData.get(world).addTelporter(message.getID(), message.getBlockPos());
-                YatmWorldSaveData.get(world).save(world);
+                YatmWorldSaveData yatmWorldSaveData = YatmWorldSaveData.get(world);
+                yatmWorldSaveData.removeBlockPos(message.getBlockPos());
+                yatmWorldSaveData.addTelporter(message.getID(), message.getBlockPos());
+                yatmWorldSaveData.save(world);
             }
         }
     }
