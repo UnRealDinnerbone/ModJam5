@@ -1,14 +1,11 @@
 package com.unrealdinnerbone.yatm.client.event.register;
 
-import com.unrealdinnerbone.yatm.client.tesr.TESRTeleporter;
-import com.unrealdinnerbone.yatm.common.block.TileEntityTeleporter;
 import com.unrealdinnerbone.yatm.lib.Reference;
 import com.unrealdinnerbone.yatm.lib.YatmBlocks;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;

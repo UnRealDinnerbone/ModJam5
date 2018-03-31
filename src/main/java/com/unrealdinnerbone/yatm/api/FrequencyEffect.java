@@ -17,5 +17,5 @@ public abstract class FrequencyEffect extends IForgeRegistryEntry.Impl<Frequency
 
     public abstract void spawnTelportArriveEffect(World world, BlockPos blockPos, EntityPlayer player);
 
-    public abstract void spawnPreTeleportEffect(World world, BlockPos blockPos, int count);
+    public abstract void spawnPreTeleportEffect(World world, BlockPos blockPos, double count);
 }

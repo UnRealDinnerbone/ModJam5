@@ -7,8 +7,12 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class RingEffect extends FrequencyEffect {
+public class RiseEffect extends FrequencyEffect {
 
+
+    public RiseEffect(EnumParticleTypes enumParticleTypes) {
+        
+    }
 
     @Override
     public int getTelerportTime() {

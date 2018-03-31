@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Random;
 
 public class BlockTeleporter extends Block implements ITileEntityProvider {
+
     private final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
 
     public BlockTeleporter() {
