@@ -8,10 +8,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class YatmWorldSaveData extends WorldSavedData {
 
@@ -50,6 +48,20 @@ public class YatmWorldSaveData extends WorldSavedData {
         }
     }
 
+    public boolean hasTwin(int ID, BlockPos blockPos) {
+        if(postions.containsKey(ID)) {
+            List<BlockPos> posList = postions.get(ID);
+            if(posList.size() == 2) {
+                List<BlockPos> dummyList = new ArrayList<>(posList);
+                List<BlockPos> toRemove = new ArrayList<>();
+                posList.stream().filter(blockPos1 -> blockPos.toLong() == blockPos1.toLong()).forEach(toRemove::add);
+                dummyList.removeAll(toRemove);
+                return dummyList.size() == 1;
+            }
+        }
+        return false;
+    }
+
     public int removeBlockPos(BlockPos blockPos) {
         if(hasBlockPos(blockPos)) {
             for(int key: postions.keySet()) {
@@ -68,14 +80,15 @@ public class YatmWorldSaveData extends WorldSavedData {
         return postions.values().stream().flatMap(Collection::stream).anyMatch(blockPos1 -> blockPos.toLong() == blockPos1.toLong());
     }
 
-    public BlockPos getOtherPosFormIdAndPos(int id, BlockPos pos) {
-        List<BlockPos> posList = getPostionsFormID(id);
-        for (BlockPos pos1 : posList) {
-            if (pos1.toLong() != pos.toLong()) {
-                return pos1;
-            }
+    @Nullable
+    public BlockPos getTwin(int id, BlockPos pos) {
+        if(hasTwin(id, pos)) {
+            List<BlockPos> blockPosList = new ArrayList<>(postions.get(id));
+            blockPosList.remove(pos);
+            return blockPosList.stream().findFirst().get();
+        }else {
+            return null;
         }
-        return null;
     }
 
     public void removePostionFormID(int id, BlockPos pos) {

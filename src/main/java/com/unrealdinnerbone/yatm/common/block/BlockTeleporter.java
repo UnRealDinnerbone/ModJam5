@@ -2,6 +2,7 @@ package com.unrealdinnerbone.yatm.common.block;
 
 import com.unrealdinnerbone.yatm.packet.PacketHandler;
 import com.unrealdinnerbone.yatm.packet.open.PacketOpenSetFrequencyGUI;
+import com.unrealdinnerbone.yatm.util.ParticleHelper;
 import com.unrealdinnerbone.yatm.util.TelporterHelper;
 import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
 import net.minecraft.block.Block;
@@ -75,9 +76,6 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
         return true;
     }
 
-    int count = 0;
-    private boolean particlesOn = false;
-
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
         YatmWorldSaveData.get(worldIn).removeBlockPos(pos);
@@ -85,30 +83,11 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
 
     @Override
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        if (!worldIn.isRemote) {
+        if (!worldIn.isRemote && entityIn instanceof EntityPlayer) {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             TileEntityTeleporter tileEntityTeleporter = (TileEntityTeleporter) tileEntity;
-            if (entityIn instanceof EntityPlayer) {
-                EntityPlayer entityPlayer = (EntityPlayer) entityIn;
-                List<BlockPos> blockPosList = YatmWorldSaveData.get(worldIn).getPostionsFormID(tileEntityTeleporter.getID());
-                if(blockPosList.size() >= 2) {
-                    count++;
-                    particlesOn = true;
-                    if(count >= 20) {
-                        BlockPos blockPos = YatmWorldSaveData.get(worldIn).getOtherPosFormIdAndPos(tileEntityTeleporter.getID(), pos);
-                        TelporterHelper.performTeleport(entityPlayer, 0, blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
-                        count = 0;
-                        particlesOn = false;
-                    }
-                }
-            }
+            tileEntityTeleporter.onEntityWalk((EntityPlayer) entityIn);
         }
     }
 
-    @Override
-    public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-        if(particlesOn) {
-            worldIn.spawnParticle(EnumParticleTypes.CLOUD, pos.getX(), pos.getY() + 1.5, pos.getZ(), 0, 1, 0, 10, 1000);
-        }
-    }
 }
