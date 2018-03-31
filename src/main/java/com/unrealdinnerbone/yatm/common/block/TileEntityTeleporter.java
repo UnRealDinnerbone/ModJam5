@@ -25,8 +25,14 @@ public class TileEntityTeleporter extends TileEntity {
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
-        NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yatm");
-        this.ID = tagCompound.getInteger("id");
         super.readFromNBT(compound);
+        if(compound.hasKey("yatm")) {
+            NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yatm");
+            if(compound.hasKey("id")) {
+                this.ID = tagCompound.getInteger("id");
+                return;
+            }
+        }
+        this.ID = 0;
     }
 }

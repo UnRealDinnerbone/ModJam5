@@ -12,7 +12,7 @@ public class GUIButtonFrequency extends GuiButton {
     private int amount;
 
     public GUIButtonFrequency(int x, int y, int amount) {
-        super(buttonID++, x, y, WIDTH, HEIGHT, ((amount > 0 ? "+" : "-") + " " + amount));
+        super(buttonID++, x, y, WIDTH, HEIGHT, ((amount > 0 ? "+" : "") + amount));
         this.amount = amount;
     }
 

@@ -29,11 +29,13 @@ public class YatmWorldSaveData extends WorldSavedData {
 
 
     public void addTelporter(int id, BlockPos blockPos) {
-        if(!this.postions.containsKey(id) && id != 0) {
-            this.postions.put(id, new ArrayList<>());
-        }
-        if(!this.postions.get(id).contains(blockPos) && id != 0)  {
-            this.postions.get(id).add(blockPos);
+        if(blockPos != null) {
+            if(!this.postions.containsKey(id) && id != 0) {
+                this.postions.put(id, new ArrayList<>());
+            }
+            if(id != 0 && !this.postions.get(id).contains(blockPos))  {
+                this.postions.get(id).add(blockPos);
+            }
         }
     }
 
@@ -43,6 +45,16 @@ public class YatmWorldSaveData extends WorldSavedData {
         }else {
             return new ArrayList<>();
         }
+    }
+
+    public BlockPos getOtherPosFormIdAndPos(int id, BlockPos pos) {
+        List<BlockPos> posList = getPostionsFormID(id);
+        for (BlockPos pos1 : posList) {
+            if (pos1.toLong() != pos.toLong()) {
+                return pos1;
+            }
+        }
+        return null;
     }
 
     public void removePostionFormID(int id, BlockPos pos) {
