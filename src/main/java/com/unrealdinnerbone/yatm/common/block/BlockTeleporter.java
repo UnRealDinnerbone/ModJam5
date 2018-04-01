@@ -71,7 +71,7 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             TileEntityTeleporter tileEntityTeleporter = (TileEntityTeleporter) tileEntity;
             if (playerIn instanceof EntityPlayerMP) {
-                PacketHandler.INSTANCE.sendTo(new PacketOpenSetFrequencyGUI(pos, tileEntityTeleporter.getID()), (EntityPlayerMP) playerIn);
+                PacketHandler.INSTANCE.sendTo(new PacketOpenSetFrequencyGUI(pos, tileEntityTeleporter.getID(), tileEntityTeleporter.getFrequencyEffect()), (EntityPlayerMP) playerIn);
             }
         }
         return true;

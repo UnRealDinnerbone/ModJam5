@@ -1,8 +1,9 @@
 package com.unrealdinnerbone.yatm.common.event.register;
 
-import com.unrealdinnerbone.yatm.api.FrequencyEffect;
-import com.unrealdinnerbone.yatm.common.effect.RingEffect;
+import com.unrealdinnerbone.yatm.api.TelerporterEffect;
+import com.unrealdinnerbone.yatm.common.effect.RiseEffect;
 import com.unrealdinnerbone.yatm.lib.Reference;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -11,7 +12,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class EventEffectRegister {
 
     @SubscribeEvent
-    public static void addBlocks(RegistryEvent.Register<FrequencyEffect> event) {
-        event.getRegistry().register(new RingEffect().setRegistryName(Reference.MOD_ID, "ring"));
+    public static void addBlocks(RegistryEvent.Register<TelerporterEffect> event) {
+        for(EnumParticleTypes types: EnumParticleTypes.values()) {
+            if(types.getArgumentCount() == 0) {
+                event.getRegistry().register(new RiseEffect(types).setRegistryName(Reference.MOD_ID, "rise_" + types.getParticleName()));
+            }
+        }
     }
 }

@@ -1,16 +1,20 @@
 package com.unrealdinnerbone.yatm.client.gui;
 
+import com.unrealdinnerbone.yatm.api.TelerporterEffect;
+import com.unrealdinnerbone.yatm.lib.Reference;
 import com.unrealdinnerbone.yatm.packet.PacketHandler;
 import com.unrealdinnerbone.yatm.packet.set.PacketSetFrequency;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.IOException;
 
 public class GUISelectFrequency extends GuiScreen {
 
+    private final ResourceLocation TEXTURE_BLANK = new ResourceLocation(Reference.MOD_ID, "textures/gui/empty.png");
 
     private int id;
     private BlockPos pos;
@@ -25,54 +29,97 @@ public class GUISelectFrequency extends GuiScreen {
     private GUIButtonFrequency REMOVE_10;
     private GUIButtonFrequency REMOVE_100;
 
+    private GUIButtoEffectType frequencyButton;
+
     private GuiTextField frequency;
 
+    private TelerporterEffect effect;
 
 
-    public GUISelectFrequency(BlockPos pos, int id) {
+
+    public GUISelectFrequency(BlockPos pos, int id, TelerporterEffect effect) {
         super();
         this.pos = pos;
         this.id = id;
         this.START_POS = pos;
         this.START_ID = id;
+        this.effect = effect;
     }
 
     @Override
     public void initGui() {
+
         super.initGui();
         int width = this.width / 2;
         int height = this.height / 2;
-        ADD_1 = this.addButton(new GUIButtonFrequency(width - (GUIButtonFrequency.WIDTH / 2), height + 20,  1));
-        ADD_10 = this.addButton(new GUIButtonFrequency(width - (GUIButtonFrequency.WIDTH / 2 * 3), height + 20,  10));
-        ADD_100 = this.addButton(new GUIButtonFrequency( width - (GUIButtonFrequency.WIDTH / 2 * 5), height + 20,  100));
-        REMOVE_1 = this.addButton(new GUIButtonFrequency( width + (GUIButtonFrequency.WIDTH / 2), height + 20,  -1));
-        REMOVE_10 = this.addButton(new GUIButtonFrequency( width + (GUIButtonFrequency.WIDTH / 2 * 3), height + 20,  -10));
-        REMOVE_100 = this.addButton(new GUIButtonFrequency(width + (GUIButtonFrequency.WIDTH / 2 * 5), height + 20, -100));
-        this.frequency = new GuiTextField(10, this.fontRenderer, width - 16, height, 64, 20);
+        int centerX = (this.width / 2) - 256 / 2;
+        int centerY = (this.height / 2) - 158 / 2;
+        int offest = 8;
+        ADD_1 = this.addButton(new GUIButtonFrequency(centerX + offest, height + 20,  -100));
+        ADD_10 = this.addButton(new GUIButtonFrequency(centerX + (40) + offest, height + 20,  -10));
+        ADD_100 = this.addButton(new GUIButtonFrequency( centerX + (40 * 2) + offest, height + 20,  -1));
+        REMOVE_1 = this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20,  +1));
+        REMOVE_10 = this.addButton(new GUIButtonFrequency(  centerX +(40 * 4) + offest, height + 20,  +10));
+        REMOVE_100 = this.addButton(new GUIButtonFrequency(centerX + (40 * 5) + offest, height + 20, +100));
+        frequencyButton = this.addButton(new GUIButtoEffectType(centerX + (32), height - 70, effect));
+        this.frequency = new GuiTextField(10, this.fontRenderer, width - 32, height - 10, 64, 20);
         this.frequency.setFocused(true);
+
     }
 
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    public void actionPerformed(GuiButton button, int mouseButton) throws IOException {
         super.actionPerformed(button);
         if (button instanceof GUIButtonFrequency) {
             id += ((GUIButtonFrequency) button).getAmount();
+        }else
+        if (button instanceof GUIButtoEffectType) {
+            if(mouseButton == 0) {
+                ((GUIButtoEffectType) button).goNext();
+            }else {
+                ((GUIButtoEffectType) button).goBack();
+            }
         }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+            for (int i = 0; i < this.buttonList.size(); ++i) {
+                GuiButton guibutton = this.buttonList.get(i);
+
+                if (guibutton.mousePressed(this.mc, mouseX, mouseY)) {
+                    net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre event = new net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre(this, guibutton, this.buttonList);
+                    if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
+                        break;
+                    guibutton = event.getButton();
+                    this.selectedButton = guibutton;
+                    guibutton.playPressSound(this.mc.getSoundHandler());
+                    this.actionPerformed(guibutton);
+                    if (this.equals(this.mc.currentScreen))
+                        this.actionPerformed(event.getButton(), mouseButton);
+                }
+            }
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        int centerX = (width / 2) - 256 / 2;
+        int centerY = (height / 2) - 158 / 2;
+        this.mc.getTextureManager().bindTexture(TEXTURE_BLANK);
+        drawTexturedModalRect(centerX, centerY, 0, 0, 256, 158);
+
         this.frequency.setText(String.valueOf(id));
         this.frequency.drawTextBox();
         super.drawScreen(mouseX, mouseY, partialTicks);
+
     }
 
+    //Todo
     @Override
     public void onGuiClosed() {
-        if(START_ID != id) {
-            PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(pos, id, START_POS, START_ID));
-        }
+//        if(START_ID != id) {
+            PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(pos, id, START_POS, START_ID, frequencyButton.getEffect()));
+//        }
     }
 
     @Override

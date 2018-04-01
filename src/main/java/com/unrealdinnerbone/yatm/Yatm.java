@@ -1,14 +1,10 @@
 package com.unrealdinnerbone.yatm;
 
-import com.unrealdinnerbone.yatm.client.tesr.TESRTeleporter;
-import com.unrealdinnerbone.yatm.common.block.TileEntityTeleporter;
 import com.unrealdinnerbone.yatm.lib.Reference;
 import com.unrealdinnerbone.yatm.packet.PacketHandler;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(
@@ -31,9 +27,6 @@ public class Yatm {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        if(event.getSide() == Side.CLIENT) {
-//            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTeleporter.class, new TESRTeleporter());
-        }
     }
 
 
@@ -41,5 +34,12 @@ public class Yatm {
     public void postinit(FMLPostInitializationEvent event) {
 
     }
+
+    public void onServerLoad(FMLServerStartingEvent event) {
+        event.getServer().getEntityWorld();
+    }
+
+    //Todo Cross Dim TPing
+    //Todo More Effect
 
 }

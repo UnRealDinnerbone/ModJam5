@@ -1,13 +1,13 @@
 package com.unrealdinnerbone.yatm.common.effect;
 
-import com.unrealdinnerbone.yatm.api.FrequencyEffect;
+import com.unrealdinnerbone.yatm.api.TelerporterEffect;
 import com.unrealdinnerbone.yatm.util.ParticleHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class RingEffect extends FrequencyEffect {
+public class RingEffect extends TelerporterEffect {
 
 
     @Override

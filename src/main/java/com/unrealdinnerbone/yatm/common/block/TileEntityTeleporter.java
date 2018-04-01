@@ -1,27 +1,23 @@
 package com.unrealdinnerbone.yatm.common.block;
 
-import com.unrealdinnerbone.yatm.api.FrequencyEffect;
+import com.unrealdinnerbone.yatm.api.TelerporterEffect;
 import com.unrealdinnerbone.yatm.common.event.register.EventRegisterRegisters;
-import com.unrealdinnerbone.yatm.lib.YatmEffects;
-import com.unrealdinnerbone.yatm.util.ParticleHelper;
 import com.unrealdinnerbone.yatm.util.TelporterHelper;
 import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.Map;
 import java.util.Set;
 
-public class TileEntityTeleporter extends TileEntity implements ITickable {
+public class TileEntityTeleporter extends TileEntity  {
 
     private int ID;
-    private FrequencyEffect frequencyEffect = YatmEffects.RING_EFFECT;
+    private TelerporterEffect frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
     private int count;
 
     public int getID() {
@@ -54,17 +50,17 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
 
             if(compound.hasKey("name")) {
                 String name = tagCompound.getString("name");
-                Set<Map.Entry<ResourceLocation, FrequencyEffect>> registry = EventRegisterRegisters.getFrequencyRegistry().getEntries();
-                for(Map.Entry<ResourceLocation, FrequencyEffect> entry: registry) {
+                Set<Map.Entry<ResourceLocation, TelerporterEffect>> registry = EventRegisterRegisters.getFrequencyRegistry().getEntries();
+                for(Map.Entry<ResourceLocation, TelerporterEffect> entry: registry) {
                     if(name.equalsIgnoreCase(entry.getValue().getRegistryName().toString())) {
                         this.frequencyEffect = entry.getValue();
                         return;
                     }
                 }
-                this.frequencyEffect = YatmEffects.RING_EFFECT;
+                this.frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
 
             } else {
-                this.frequencyEffect = YatmEffects.RING_EFFECT;
+                this.frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
             }
 
         }
@@ -87,7 +83,7 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
         }
     }
 
-    public FrequencyEffect getFrequencyEffect() {
+    public TelerporterEffect getFrequencyEffect() {
         return frequencyEffect;
     }
 
@@ -99,12 +95,7 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
         return (count <= frequencyEffect.getTelerportTime()) && count != 0;
     }
 
-    @Override
-    public void update() {
-        if (!world.isRemote) {
-            if (doParticleSpawn()) {
-//                frequencyEffect.spawnPreTeleportEffect(world, pos, count);
-            }
-        }
+    public void setFrequencyEffect(TelerporterEffect frequencyEffect) {
+        this.frequencyEffect = frequencyEffect;
     }
 }

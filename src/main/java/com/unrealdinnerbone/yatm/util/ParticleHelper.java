@@ -1,11 +1,8 @@
 package com.unrealdinnerbone.yatm.util;
 
-import com.unrealdinnerbone.yatm.packet.PacketHandler;
-import com.unrealdinnerbone.yatm.packet.spawn.PacketSpawnParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public class ParticleHelper
 {

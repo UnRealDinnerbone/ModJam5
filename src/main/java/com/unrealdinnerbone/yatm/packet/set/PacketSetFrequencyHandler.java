@@ -21,6 +21,7 @@ public class PacketSetFrequencyHandler implements IMessageHandler<PacketSetFrequ
             if (tileEntity instanceof TileEntityTeleporter) {
                 TileEntityTeleporter telporter = (TileEntityTeleporter) tileEntity;
                 telporter.setID(message.getID());
+                telporter.setFrequencyEffect(message.getEffect());
                 telporter.markDirty();
                 YatmWorldSaveData yatmWorldSaveData = YatmWorldSaveData.get(world);
                 yatmWorldSaveData.removeBlockPos(message.getBlockPos());

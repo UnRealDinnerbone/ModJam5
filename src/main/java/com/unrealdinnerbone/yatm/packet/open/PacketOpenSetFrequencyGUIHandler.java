@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketOpenSetFrequencyGUIHandler implements IMessageHandler<PacketOpenSetFrequencyGUI, IMessage> {
 
     private void handle(PacketOpenSetFrequencyGUI message, MessageContext ctx) {
-        Minecraft.getMinecraft().displayGuiScreen(new GUISelectFrequency(message.getBlockPos(), message.getID()));
+        Minecraft.getMinecraft().displayGuiScreen(new GUISelectFrequency(message.getBlockPos(), message.getID(), message.getEffect()));
     }
 
     @Override
