@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.Map;
 import java.util.Set;
@@ -26,10 +25,11 @@ public class TileEntityTeleporter extends TileEntity  {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagCompound myCompund = compound.copy();
         NBTTagCompound tagCompound = new NBTTagCompound();
-        tagCompound.setString("name", frequencyEffect.getRegistryName().toString());
-        compound.setTag("yatm", tagCompound);
-        return super.writeToNBT(compound);
+        tagCompound.setString("name", this.frequencyEffect.getRegistryName().toString());
+        myCompund.setTag("yatm", tagCompound);
+        return super.writeToNBT(myCompund);
     }
 
     @Override

@@ -3,7 +3,9 @@ package com.unrealdinnerbone.yatm.packet.set;
 import com.unrealdinnerbone.yatm.common.block.TileEntityTeleporter;
 import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -16,7 +18,7 @@ public class PacketSetFrequencyHandler implements IMessageHandler<PacketSetFrequ
         EntityPlayer player = ctx.getServerHandler().player;
         World world = player.getEntityWorld();
         if (world.isBlockLoaded(message.getBlockPos())) {
-            TileEntity tileEntity = world.getTileEntity(message.getBlockPos());
+            TileEntity tileEntity = world.getTileEntity(new BlockPos(message.getBlockPos()));
             if (tileEntity instanceof TileEntityTeleporter) {
                 if(message.getStartID() != message.getID()) {
                     YatmWorldSaveData yatmWorldSaveData = YatmWorldSaveData.get(world);
@@ -26,7 +28,11 @@ public class PacketSetFrequencyHandler implements IMessageHandler<PacketSetFrequ
                 }
                 TileEntityTeleporter telporter = (TileEntityTeleporter) tileEntity;
                 telporter.setFrequencyEffect(message.getEffect());
-                telporter.markDirty();
+//                telporter.markDirty();
+
+//                world.notifyBlockUpdate(message.getBlockPos(), world.getBlockState(message.getBlockPos()), world.getBlockState(message.getBlockPos()), 3);
+//                tileEntity.writeToNBT(tileEntity.getUpdateTag());
+//                tileEntity.readFromNBT(tileEntity.getUpdateTag());
             }
         }
     }

@@ -14,12 +14,13 @@ public class EventBlockClicked {
 
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
+    public static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         IBlockState state = event.getWorld().getBlockState(event.getPos());
         if (state.getBlock() == Blocks.STONE_SLAB) {
             System.out.println("G");
             if(event.getItemStack().getItem() == Items.ENDER_EYE) {
                 event.getWorld().setBlockState(event.getPos(), YatmBlocks.BLOCK_TELEPORTER.getDefaultState());
+                event.setCanceled(true);
             }
         }
     }
