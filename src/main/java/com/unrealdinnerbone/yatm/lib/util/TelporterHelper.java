@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yatm.util;
+package com.unrealdinnerbone.yatm.lib.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

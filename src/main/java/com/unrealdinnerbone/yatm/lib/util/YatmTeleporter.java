@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yatm.util;
+package com.unrealdinnerbone.yatm.lib.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;

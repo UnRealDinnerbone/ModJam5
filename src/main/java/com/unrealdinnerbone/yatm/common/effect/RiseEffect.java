@@ -1,11 +1,10 @@
 package com.unrealdinnerbone.yatm.common.effect;
 
 import com.unrealdinnerbone.yatm.api.TelerporterEffect;
-import com.unrealdinnerbone.yatm.util.ParticleHelper;
+import com.unrealdinnerbone.yatm.lib.DimBlockPos;
+import com.unrealdinnerbone.yatm.lib.util.ParticleHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -24,17 +23,17 @@ public class RiseEffect extends TelerporterEffect {
     }
 
     @Override
-    public void spawnTeleportEffect(World world, BlockPos blockPos, EntityPlayer player) {
+    public void spawnTeleportEffect(World world, DimBlockPos blockPos, EntityPlayer player) {
         spawn(world, blockPos);
     }
 
     @Override
-    public void spawnTelportArriveEffect(World world, BlockPos blockPos, EntityPlayer player) {
+    public void spawnTelportArriveEffect(World world, DimBlockPos blockPos, EntityPlayer player) {
         spawn(world, blockPos);
     }
 
     @Override
-    public void spawnPreTeleportEffect(World world, BlockPos blockPos, double count) {
+    public void spawnPreTeleportEffect(World world, DimBlockPos blockPos, double count) {
         ParticleHelper.spawnParticleRing(world, TYPE,  blockPos.getX() + 0.5,  blockPos.getY() + (count / 9.0),   blockPos.getZ() + 0.5, 0, 0, 0, 0.1);
     }
 

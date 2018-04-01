@@ -1,9 +1,9 @@
 package com.unrealdinnerbone.yatm.common.block;
 
+import com.unrealdinnerbone.yatm.Yatm;
+import com.unrealdinnerbone.yatm.lib.DimBlockPos;
 import com.unrealdinnerbone.yatm.packet.PacketHandler;
 import com.unrealdinnerbone.yatm.packet.open.PacketOpenSetFrequencyGUI;
-import com.unrealdinnerbone.yatm.util.ParticleHelper;
-import com.unrealdinnerbone.yatm.util.TelporterHelper;
 import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -13,22 +13,15 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.SPacketParticles;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Random;
 
 public class BlockTeleporter extends Block implements ITileEntityProvider {
 
@@ -71,7 +64,9 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             TileEntityTeleporter tileEntityTeleporter = (TileEntityTeleporter) tileEntity;
             if (playerIn instanceof EntityPlayerMP) {
-                PacketHandler.INSTANCE.sendTo(new PacketOpenSetFrequencyGUI(pos, tileEntityTeleporter.getID(), tileEntityTeleporter.getFrequencyEffect()), (EntityPlayerMP) playerIn);
+                YatmWorldSaveData saveData = YatmWorldSaveData.get(worldIn);
+                DimBlockPos dimBlockPos = new DimBlockPos(pos, worldIn.provider.getDimension());
+                PacketHandler.INSTANCE.sendTo(new PacketOpenSetFrequencyGUI(dimBlockPos, saveData.getIDFormPos(dimBlockPos), tileEntityTeleporter.getFrequencyEffect()), (EntityPlayerMP) playerIn);
             }
         }
         return true;
@@ -79,7 +74,7 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
 
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
-        YatmWorldSaveData.get(worldIn).removeBlockPos(pos);
+        YatmWorldSaveData.get(worldIn).removeDimBlockPos(new DimBlockPos(pos, worldIn.provider.getDimension()));
     }
 
     @Override

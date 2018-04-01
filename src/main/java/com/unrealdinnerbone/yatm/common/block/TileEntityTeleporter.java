@@ -2,12 +2,12 @@ package com.unrealdinnerbone.yatm.common.block;
 
 import com.unrealdinnerbone.yatm.api.TelerporterEffect;
 import com.unrealdinnerbone.yatm.common.event.register.EventRegisterRegisters;
-import com.unrealdinnerbone.yatm.util.TelporterHelper;
+import com.unrealdinnerbone.yatm.lib.DimBlockPos;
+import com.unrealdinnerbone.yatm.lib.util.TelporterHelper;
 import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
@@ -16,22 +16,17 @@ import java.util.Set;
 
 public class TileEntityTeleporter extends TileEntity  {
 
-    private int ID;
-    private TelerporterEffect frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
+    private TelerporterEffect frequencyEffect;
     private int count;
 
-    public int getID() {
-        return ID;
-    }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public TileEntityTeleporter() {
+        this.frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         NBTTagCompound tagCompound = new NBTTagCompound();
-        tagCompound.setInteger("id", ID);
         tagCompound.setString("name", frequencyEffect.getRegistryName().toString());
         compound.setTag("yatm", tagCompound);
         return super.writeToNBT(compound);
@@ -42,13 +37,7 @@ public class TileEntityTeleporter extends TileEntity  {
         super.readFromNBT(compound);
         if(compound.hasKey("yatm")) {
             NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yatm");
-            if(compound.hasKey("id")) {
-                this.ID = tagCompound.getInteger("id");
-            } else {
-                this.ID = 0;
-            }
-
-            if(compound.hasKey("name")) {
+            if(tagCompound.hasKey("name")) {
                 String name = tagCompound.getString("name");
                 Set<Map.Entry<ResourceLocation, TelerporterEffect>> registry = EventRegisterRegisters.getFrequencyRegistry().getEntries();
                 for(Map.Entry<ResourceLocation, TelerporterEffect> entry: registry) {
@@ -68,15 +57,16 @@ public class TileEntityTeleporter extends TileEntity  {
 
     public void onEntityWalk(EntityPlayer entityPlayer) {
         YatmWorldSaveData worldSaveData = YatmWorldSaveData.get(world);
-        if (worldSaveData.hasTwin(ID, pos)) {
+        DimBlockPos pos = new DimBlockPos(this.pos, world.provider.getDimension());
+        if (worldSaveData.hasTwin(pos)) {
             count++;
             frequencyEffect.spawnPreTeleportEffect(world, pos, count);
             if (count >= frequencyEffect.getTelerportTime()) {
-                BlockPos blockPos = worldSaveData.getTwin(ID, pos);
+                DimBlockPos blockPos = worldSaveData.getTwin(pos);
                 if (blockPos != null) {
                     count = 0;
                     frequencyEffect.spawnTeleportEffect(world, pos, entityPlayer);
-                    TelporterHelper.performTeleport(entityPlayer, world.provider.getDimension(), blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+                    TelporterHelper.performTeleport(entityPlayer, blockPos.getDimID(), blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
                     frequencyEffect.spawnTelportArriveEffect(world, blockPos, entityPlayer);
                 }
             }
@@ -97,5 +87,6 @@ public class TileEntityTeleporter extends TileEntity  {
 
     public void setFrequencyEffect(TelerporterEffect frequencyEffect) {
         this.frequencyEffect = frequencyEffect;
+        markDirty();
     }
 }

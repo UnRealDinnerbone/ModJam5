@@ -1,6 +1,7 @@
 package com.unrealdinnerbone.yatm.client.gui;
 
 import com.unrealdinnerbone.yatm.api.TelerporterEffect;
+import com.unrealdinnerbone.yatm.lib.DimBlockPos;
 import com.unrealdinnerbone.yatm.lib.Reference;
 import com.unrealdinnerbone.yatm.packet.PacketHandler;
 import com.unrealdinnerbone.yatm.packet.set.PacketSetFrequency;
@@ -17,10 +18,11 @@ public class GUISelectFrequency extends GuiScreen {
     private final ResourceLocation TEXTURE_BLANK = new ResourceLocation(Reference.MOD_ID, "textures/gui/empty.png");
 
     private int id;
-    private BlockPos pos;
+    private DimBlockPos pos;
 
     private final int START_ID;
     private final BlockPos START_POS;
+    private final TelerporterEffect START_EFFECT;
 
     private GUIButtonFrequency ADD_1;
     private GUIButtonFrequency ADD_10;
@@ -37,13 +39,14 @@ public class GUISelectFrequency extends GuiScreen {
 
 
 
-    public GUISelectFrequency(BlockPos pos, int id, TelerporterEffect effect) {
+    public GUISelectFrequency(DimBlockPos pos, int id, TelerporterEffect effect) {
         super();
         this.pos = pos;
         this.id = id;
         this.START_POS = pos;
         this.START_ID = id;
         this.effect = effect;
+        this.START_EFFECT = effect;
     }
 
     @Override
@@ -117,9 +120,9 @@ public class GUISelectFrequency extends GuiScreen {
     //Todo
     @Override
     public void onGuiClosed() {
-//        if(START_ID != id) {
-            PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(pos, id, START_POS, START_ID, frequencyButton.getEffect()));
-//        }
+        if(START_ID != id || !frequencyButton.getEffect().getRegistryName().toString().equalsIgnoreCase(START_EFFECT.getRegistryName().toString())) {
+            PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(pos, id, START_POS, START_ID, frequencyButton.getEffect(), START_EFFECT));
+        }
     }
 
     @Override

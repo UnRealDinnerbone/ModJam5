@@ -1,7 +1,7 @@
 package com.unrealdinnerbone.yatm.world;
 
+import com.unrealdinnerbone.yatm.lib.DimBlockPos;
 import com.unrealdinnerbone.yatm.lib.Reference;
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -15,7 +15,7 @@ public class YatmWorldSaveData extends WorldSavedData {
 
 
     private static final String DATA_NAME = Reference.MOD_ID + "_TelerporterData";
-    private HashMap<Integer, List<BlockPos>> postions;
+    private HashMap<Integer, List<DimBlockPos>> postions;
 
     public YatmWorldSaveData() {
         super(DATA_NAME);
@@ -28,19 +28,19 @@ public class YatmWorldSaveData extends WorldSavedData {
     }
 
 
-    public void addTelporter(int id, BlockPos blockPos) {
+    public void addTelporter(int id, DimBlockPos blockPos) {
         if(blockPos != null) {
             if(!this.postions.containsKey(id) && id != 0) {
                 this.postions.put(id, new ArrayList<>());
             }
             if(id != 0 && !this.postions.get(id).contains(blockPos))  {
                 this.postions.get(id).add(blockPos);
-                System.out.println("Added BlockPos " + blockPos + " with id" + id);
+                System.out.println("Added DimBlockPos " + blockPos + " with id" + id);
             }
         }
     }
 
-    public List<BlockPos> getPostionsFormID(int id) {
+    public List<DimBlockPos> getPostionsFormID(int id) {
         if(this.postions.containsKey(id) && id != 0) {
             return this.postions.get(id);
         }else {
@@ -48,27 +48,10 @@ public class YatmWorldSaveData extends WorldSavedData {
         }
     }
 
-    public boolean hasTwin(int ID, BlockPos blockPos) {
-        if(postions.containsKey(ID)) {
-            List<BlockPos> posList = postions.get(ID);
-            if(posList.size() == 2) {
-                List<BlockPos> dummyList = new ArrayList<>(posList);
-                List<BlockPos> toRemove = new ArrayList<>();
-                posList.stream().filter(blockPos1 -> blockPos.toLong() == blockPos1.toLong()).forEach(toRemove::add);
-                dummyList.removeAll(toRemove);
-                return dummyList.size() == 1;
-            }
-        }
-        return false;
-    }
-
-    public int removeBlockPos(BlockPos blockPos) {
-        if(hasBlockPos(blockPos)) {
-            for(int key: postions.keySet()) {
-                List<BlockPos> posList = postions.get(key);
-                if(posList.contains(blockPos)) {
-                    posList.remove(blockPos);
-                    System.out.println("Removed BlockPos " + blockPos + " form id" + key);
+    public int getIDFormPos(DimBlockPos pos) {
+        for(int key: postions.keySet()) {
+            for(DimBlockPos dimBlockPos :postions.get(key)) {
+                if(dimBlockPos.equals(pos)) {
                     return key;
                 }
             }
@@ -76,14 +59,55 @@ public class YatmWorldSaveData extends WorldSavedData {
         return 0;
     }
 
-    public boolean hasBlockPos(BlockPos blockPos) {
-        return postions.values().stream().flatMap(Collection::stream).anyMatch(blockPos1 -> blockPos.toLong() == blockPos1.toLong());
+    public boolean hasTwin(DimBlockPos blockPos) {
+        int ID = getIDFormPos(blockPos);
+        if(postions.containsKey(ID)) {
+            List<DimBlockPos> posList = postions.get(ID);
+            if(posList.size() == 2) {
+                List<DimBlockPos> dummyList = new ArrayList<>(posList);
+                List<DimBlockPos> toRemove = new ArrayList<>();
+                for (DimBlockPos pos : posList) {
+                    if (blockPos.equals(pos)) {
+                        toRemove.add(pos);
+                    }
+                }
+                dummyList.removeAll(toRemove);
+                return dummyList.size() == 1;
+            }
+        }
+        return false;
+    }
+
+    public int removeDimBlockPos(DimBlockPos blockPos) {
+        if(hasDimBlockPos(blockPos)) {
+            for(int key: postions.keySet()) {
+                List<DimBlockPos> posList = postions.get(key);
+                if(posList.contains(blockPos)) {
+                    posList.remove(blockPos);
+                    System.out.println("Removed DimBlockPos " + blockPos + " form id" + key);
+                    return key;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public boolean hasDimBlockPos(DimBlockPos blockPos) {
+        for (List<DimBlockPos> dimBlockPos : postions.values()) {
+            for (DimBlockPos dimBlockPo : dimBlockPos) {
+                if (blockPos.equals(dimBlockPo)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Nullable
-    public BlockPos getTwin(int id, BlockPos pos) {
-        if(hasTwin(id, pos)) {
-            List<BlockPos> blockPosList = new ArrayList<>(postions.get(id));
+    public DimBlockPos getTwin(DimBlockPos pos) {
+        int id = getIDFormPos(pos);
+        if(hasTwin(pos)) {
+            List<DimBlockPos> blockPosList = new ArrayList<>(postions.get(id));
             blockPosList.remove(pos);
             return blockPosList.stream().findFirst().get();
         }else {
@@ -91,7 +115,7 @@ public class YatmWorldSaveData extends WorldSavedData {
         }
     }
 
-    public void removePostionFormID(int id, BlockPos pos) {
+    public void removePostionFormID(int id, DimBlockPos pos) {
         if(this.postions.containsKey(id)) {
             this.postions.get(id).remove(pos);
         }
@@ -115,14 +139,16 @@ public class YatmWorldSaveData extends WorldSavedData {
         for(String key: nbt.getKeySet()) {
             if(key.startsWith("tpNumber_")) {
                 NBTTagCompound tagCompound = nbt.getCompoundTag(key);
-                List<BlockPos> posList = new ArrayList<>();
-                for(String key2: tagCompound.getKeySet()) {
-                    long number = tagCompound.getLong(key2);
-                    posList.add(BlockPos.fromLong(number));
+                if(tagCompound.getKeySet().size() > 0) {
+                    List<DimBlockPos> posList = new ArrayList<>();
+                    for(String key2: tagCompound.getKeySet()) {
+                        String  number = tagCompound.getString(key2);
+                        posList.add(DimBlockPos.formCompindThing(number));
+                    }
+                    String number = key.replace("tpNumber_", "");
+                    int x = Integer.parseInt(number);
+                    postions.put(x, posList);
                 }
-                String number = key.replace("tpNumber_", "");
-                int x = Integer.parseInt(number);
-                postions.put(x, posList);
             }
 
         }
@@ -138,8 +164,8 @@ public class YatmWorldSaveData extends WorldSavedData {
         for(int key: postions.keySet()) {
             NBTTagCompound tagCompound = new NBTTagCompound();
             int count = 0;
-            for(BlockPos pos: postions.get(key)) {
-                tagCompound.setLong("" + count++, pos.toLong());
+            for(DimBlockPos pos: postions.get(key)) {
+                tagCompound.setString("" + count++, pos.toLong() + ";" + pos.getDimID());
             }
             compound.setTag("tpNumber_" + key, tagCompound);
         }

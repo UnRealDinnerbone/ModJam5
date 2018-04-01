@@ -2,6 +2,7 @@ package com.unrealdinnerbone.yatm.packet.open;
 
 import com.unrealdinnerbone.yatm.api.TelerporterEffect;
 import com.unrealdinnerbone.yatm.common.event.register.EventRegisterRegisters;
+import com.unrealdinnerbone.yatm.lib.DimBlockPos;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class PacketOpenSetFrequencyGUI implements IMessage {
 
-    private BlockPos blockPos;
+    private DimBlockPos blockPos;
     private int ID;
     private TelerporterEffect effect;
 
@@ -21,7 +22,7 @@ public class PacketOpenSetFrequencyGUI implements IMessage {
 
     }
 
-    public PacketOpenSetFrequencyGUI(BlockPos pos, int id, TelerporterEffect effect) {
+    public PacketOpenSetFrequencyGUI(DimBlockPos pos, int id, TelerporterEffect effect) {
         this.ID = id;
         this.blockPos = pos;
         this.effect = effect;
@@ -29,7 +30,8 @@ public class PacketOpenSetFrequencyGUI implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        blockPos = BlockPos.fromLong(buf.readLong());
+        blockPos = new DimBlockPos(BlockPos.fromLong(buf.readLong()), buf.readInt());
+
         ID = buf.readInt();
         int l = buf.readInt();
         CharSequence name = buf.readCharSequence(l, Charset.forName("utf-8"));
@@ -44,6 +46,7 @@ public class PacketOpenSetFrequencyGUI implements IMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeLong(blockPos.toLong());
+        buf.writeInt(blockPos.getDimID());
         buf.writeInt(ID);
         buf.writeInt(effect.getRegistryName().toString().length());
         buf.writeCharSequence(effect.getRegistryName().toString(), Charset.forName("utf-8"));
@@ -53,7 +56,7 @@ public class PacketOpenSetFrequencyGUI implements IMessage {
         return ID;
     }
 
-    public BlockPos getBlockPos() {
+    public DimBlockPos getBlockPos() {
         return blockPos;
     }
 

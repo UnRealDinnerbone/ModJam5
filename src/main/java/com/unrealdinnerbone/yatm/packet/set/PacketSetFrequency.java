@@ -2,6 +2,7 @@ package com.unrealdinnerbone.yatm.packet.set;
 
 import com.unrealdinnerbone.yatm.api.TelerporterEffect;
 import com.unrealdinnerbone.yatm.common.event.register.EventRegisterRegisters;
+import com.unrealdinnerbone.yatm.lib.DimBlockPos;
 import io.netty.buffer.ByteBuf;
 import jdk.nashorn.internal.ir.Block;
 import net.minecraft.util.ResourceLocation;
@@ -14,35 +15,46 @@ import java.util.Optional;
 
 public class PacketSetFrequency implements IMessage {
 
-    private BlockPos blockPos;
-    private int ID;
     private BlockPos startPos;
     private int startID;
+    private TelerporterEffect startEffect;
+
+    private DimBlockPos blockPos;
+    private int ID;
     private TelerporterEffect effect;
 
     public PacketSetFrequency() {
 
     }
 
-    public PacketSetFrequency(BlockPos pos, int id, BlockPos startPos, int startID, TelerporterEffect telerporterEffect) {
+    public PacketSetFrequency(DimBlockPos pos, int id, BlockPos startPos, int startID, TelerporterEffect effect, TelerporterEffect startEffect) {
         this.ID = id;
         this.blockPos = pos;
         this.startID = startID;
         this.startPos = startPos;
-        this.effect = telerporterEffect;
+        this.effect = effect;
+        this.startEffect = startEffect;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        blockPos = BlockPos.fromLong(buf.readLong());
+        this.blockPos = new DimBlockPos(BlockPos.fromLong(buf.readLong()), buf.readInt());
         ID = buf.readInt();
         startPos = BlockPos.fromLong(buf.readLong());
         startID = buf.readInt();
         int l = buf.readInt();
         CharSequence name = buf.readCharSequence(l, Charset.forName("utf-8"));
-        for(Map.Entry<ResourceLocation, TelerporterEffect> entry :EventRegisterRegisters.getFrequencyRegistry().getEntries()) {
+        for(Map.Entry<ResourceLocation, TelerporterEffect> entry : EventRegisterRegisters.getFrequencyRegistry().getEntries()) {
             if(entry.getValue().getRegistryName().toString().equalsIgnoreCase(name.toString())) {
                 effect = entry.getValue();
+                break;
+            }
+        }
+        int ll = buf.readInt();
+        CharSequence name2 = buf.readCharSequence(ll, Charset.forName("utf-8"));
+        for(Map.Entry<ResourceLocation, TelerporterEffect> entry : EventRegisterRegisters.getFrequencyRegistry().getEntries()) {
+            if(entry.getValue().getRegistryName().toString().equalsIgnoreCase(name2.toString())) {
+                startEffect = entry.getValue();
                 break;
             }
         }
@@ -51,18 +63,22 @@ public class PacketSetFrequency implements IMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeLong(blockPos.toLong());
+        buf.writeInt(blockPos.getDimID());
         buf.writeInt(ID);
         buf.writeLong(startPos.toLong());
         buf.writeInt(startID);
         buf.writeInt(effect.getRegistryName().toString().length());
         buf.writeCharSequence(effect.getRegistryName().toString(), Charset.forName("utf-8"));
+
+        buf.writeInt(startEffect.getRegistryName().toString().length());
+        buf.writeCharSequence(startEffect.getRegistryName().toString(), Charset.forName("utf-8"));
     }
 
     public int getID() {
         return ID;
     }
 
-    public BlockPos getBlockPos() {
+    public DimBlockPos getBlockPos() {
         return blockPos;
     }
 
@@ -76,5 +92,9 @@ public class PacketSetFrequency implements IMessage {
 
     public TelerporterEffect getEffect() {
         return effect;
+    }
+
+    public TelerporterEffect getStartEffect() {
+        return startEffect;
     }
 }
