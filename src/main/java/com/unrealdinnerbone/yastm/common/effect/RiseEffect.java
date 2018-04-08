@@ -1,8 +1,8 @@
-package com.unrealdinnerbone.yatm.common.effect;
+package com.unrealdinnerbone.yastm.common.effect;
 
-import com.unrealdinnerbone.yatm.api.TelerporterEffect;
-import com.unrealdinnerbone.yatm.lib.DimBlockPos;
-import com.unrealdinnerbone.yatm.lib.util.ParticleHelper;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yaum.libs.DimBlockPos;
+import com.unrealdinnerbone.yaum.libs.helpers.ParticleHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;

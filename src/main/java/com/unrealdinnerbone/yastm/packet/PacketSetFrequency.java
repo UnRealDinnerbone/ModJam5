@@ -1,17 +1,25 @@
-package com.unrealdinnerbone.yastm.packet.set;
+package com.unrealdinnerbone.yastm.packet;
 
 import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.common.block.TileEntityTeleporter;
 import com.unrealdinnerbone.yastm.common.event.register.EventRegisterRegisters;
-import com.unrealdinnerbone.yastm.lib.DimBlockPos;
+import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
+import com.unrealdinnerbone.yaum.api.network.ISimplePacket;
+import com.unrealdinnerbone.yaum.libs.DimBlockPos;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.nio.charset.Charset;
 import java.util.Map;
 
-public class PacketSetFrequency implements IMessage {
+public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
 
     private BlockPos startPos;
     private int startID;
@@ -94,5 +102,29 @@ public class PacketSetFrequency implements IMessage {
 
     public TelerporterEffect getStartEffect() {
         return startEffect;
+    }
+
+    private void handle(PacketSetFrequency message, MessageContext ctx) {
+        EntityPlayer player = ctx.getServerHandler().player;
+        World world = player.getEntityWorld();
+        if (world.isBlockLoaded(message.getBlockPos())) {
+            TileEntity tileEntity = world.getTileEntity(new BlockPos(message.getBlockPos()));
+            if (tileEntity instanceof TileEntityTeleporter) {
+                if(message.getStartID() != message.getID()) {
+                    YatmWorldSaveData yatmWorldSaveData = YatmWorldSaveData.get(world);
+                    yatmWorldSaveData.removeDimBlockPos(message.getBlockPos());
+                    yatmWorldSaveData.addTelporter(message.getID(), message.getBlockPos());
+                    yatmWorldSaveData.save(world);
+                }
+                TileEntityTeleporter telporter = (TileEntityTeleporter) tileEntity;
+                telporter.setFrequencyEffect(message.getEffect());
+            }
+        }
+    }
+
+    @Override
+    public IMessage onMessage(PacketSetFrequency message, MessageContext ctx) {
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
+        return null;
     }
 }

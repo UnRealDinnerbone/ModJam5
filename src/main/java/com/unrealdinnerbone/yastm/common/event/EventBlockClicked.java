@@ -1,7 +1,7 @@
-package com.unrealdinnerbone.yatm.common.event;
+package com.unrealdinnerbone.yastm.common.event;
 
-import com.unrealdinnerbone.yatm.lib.Reference;
-import com.unrealdinnerbone.yatm.lib.YatmBlocks;
+import com.unrealdinnerbone.yastm.lib.Reference;
+import com.unrealdinnerbone.yastm.lib.YatmBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

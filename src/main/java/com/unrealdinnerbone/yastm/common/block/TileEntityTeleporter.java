@@ -1,10 +1,10 @@
-package com.unrealdinnerbone.yatm.common.block;
+package com.unrealdinnerbone.yastm.common.block;
 
-import com.unrealdinnerbone.yatm.api.TelerporterEffect;
-import com.unrealdinnerbone.yatm.common.event.register.EventRegisterRegisters;
-import com.unrealdinnerbone.yatm.lib.DimBlockPos;
-import com.unrealdinnerbone.yatm.lib.util.TelporterHelper;
-import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.common.event.register.EventRegisterRegisters;
+import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
+import com.unrealdinnerbone.yaum.libs.DimBlockPos;
+import com.unrealdinnerbone.yaum.libs.helpers.TelporterHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -28,15 +28,15 @@ public class TileEntityTeleporter extends TileEntity  {
         NBTTagCompound myCompund = compound.copy();
         NBTTagCompound tagCompound = new NBTTagCompound();
         tagCompound.setString("name", this.frequencyEffect.getRegistryName().toString());
-        myCompund.setTag("yatm", tagCompound);
+        myCompund.setTag("yastm", tagCompound);
         return super.writeToNBT(myCompund);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        if(compound.hasKey("yatm")) {
-            NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yatm");
+        if(compound.hasKey("yastm")) {
+            NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yastm");
             if(tagCompound.hasKey("name")) {
                 String name = tagCompound.getString("name");
                 Set<Map.Entry<ResourceLocation, TelerporterEffect>> registry = EventRegisterRegisters.getFrequencyRegistry().getEntries();

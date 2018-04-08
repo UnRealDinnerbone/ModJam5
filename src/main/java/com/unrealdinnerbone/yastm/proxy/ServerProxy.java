@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yatm.proxy;
+package com.unrealdinnerbone.yastm.proxy;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;

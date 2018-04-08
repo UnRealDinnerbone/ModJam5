@@ -1,8 +1,8 @@
-package com.unrealdinnerbone.yatm.client.gui;
+package com.unrealdinnerbone.yastm.client.gui;
 
 import com.google.common.collect.Lists;
-import com.unrealdinnerbone.yatm.api.TelerporterEffect;
-import com.unrealdinnerbone.yatm.common.event.register.EventRegisterRegisters;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.common.event.register.EventRegisterRegisters;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 

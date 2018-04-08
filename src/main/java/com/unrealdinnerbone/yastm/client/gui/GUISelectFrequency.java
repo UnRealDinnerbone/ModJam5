@@ -1,10 +1,10 @@
-package com.unrealdinnerbone.yatm.client.gui;
+package com.unrealdinnerbone.yastm.client.gui;
 
-import com.unrealdinnerbone.yatm.api.TelerporterEffect;
-import com.unrealdinnerbone.yatm.lib.DimBlockPos;
-import com.unrealdinnerbone.yatm.lib.Reference;
-import com.unrealdinnerbone.yatm.packet.PacketHandler;
-import com.unrealdinnerbone.yatm.packet.set.PacketSetFrequency;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.lib.Reference;
+import com.unrealdinnerbone.yastm.packet.PacketSetFrequency;
+import com.unrealdinnerbone.yaum.libs.DimBlockPos;
+import com.unrealdinnerbone.yaum.network.PacketHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;

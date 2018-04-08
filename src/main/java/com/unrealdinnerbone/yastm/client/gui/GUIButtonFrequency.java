@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yatm.client.gui;
+package com.unrealdinnerbone.yastm.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 

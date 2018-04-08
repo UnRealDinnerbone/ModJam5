@@ -1,9 +1,9 @@
-package com.unrealdinnerbone.yatm.common.event.register;
+package com.unrealdinnerbone.yastm.common.event.register;
 
-import com.unrealdinnerbone.yatm.api.TelerporterEffect;
-import com.unrealdinnerbone.yatm.common.effect.CrissCrossEffect;
-import com.unrealdinnerbone.yatm.common.effect.RiseEffect;
-import com.unrealdinnerbone.yatm.lib.Reference;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.common.effect.CrissCrossEffect;
+import com.unrealdinnerbone.yastm.common.effect.RiseEffect;
+import com.unrealdinnerbone.yastm.lib.Reference;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,7 +14,6 @@ public class EventEffectRegister {
 
     @SubscribeEvent
     public static void addBlocks(RegistryEvent.Register<TelerporterEffect> event) {
-        event.getRegistry().register(new CrissCrossEffect().setRegistryName(Reference.MOD_ID, "test_01"));
         for(EnumParticleTypes types: EnumParticleTypes.values()) {
             if(types.getArgumentCount() == 0) {
                 event.getRegistry().register(new RiseEffect(types).setRegistryName(Reference.MOD_ID, "rise_" + types.getParticleName()));

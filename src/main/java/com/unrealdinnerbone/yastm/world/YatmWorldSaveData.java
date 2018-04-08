@@ -1,9 +1,8 @@
-package com.unrealdinnerbone.yatm.world;
+package com.unrealdinnerbone.yastm.world;
 
-import com.unrealdinnerbone.yatm.lib.DimBlockPos;
-import com.unrealdinnerbone.yatm.lib.Reference;
+import com.unrealdinnerbone.yastm.lib.Reference;
+import com.unrealdinnerbone.yaum.libs.DimBlockPos;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
@@ -143,7 +142,7 @@ public class YatmWorldSaveData extends WorldSavedData {
                     List<DimBlockPos> posList = new ArrayList<>();
                     for(String key2: tagCompound.getKeySet()) {
                         String  number = tagCompound.getString(key2);
-                        posList.add(DimBlockPos.formCompindThing(number));
+                        posList.add(DimBlockPos.fromStoreString(number));
                     }
                     String number = key.replace("tpNumber_", "");
                     int x = Integer.parseInt(number);
@@ -165,7 +164,7 @@ public class YatmWorldSaveData extends WorldSavedData {
             NBTTagCompound tagCompound = new NBTTagCompound();
             int count = 0;
             for(DimBlockPos pos: postions.get(key)) {
-                tagCompound.setString("" + count++, pos.toLong() + ";" + pos.getDimID());
+                tagCompound.setString("" + count++, pos.toStoreString());
             }
             compound.setTag("tpNumber_" + key, tagCompound);
         }

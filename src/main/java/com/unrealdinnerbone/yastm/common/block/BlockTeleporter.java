@@ -1,21 +1,22 @@
-package com.unrealdinnerbone.yatm.common.block;
+package com.unrealdinnerbone.yastm.common.block;
 
-import com.unrealdinnerbone.yatm.Yatm;
-import com.unrealdinnerbone.yatm.lib.DimBlockPos;
-import com.unrealdinnerbone.yatm.packet.PacketHandler;
-import com.unrealdinnerbone.yatm.packet.open.PacketOpenSetFrequencyGUI;
-import com.unrealdinnerbone.yatm.world.YatmWorldSaveData;
+import com.unrealdinnerbone.yastm.lib.Reference;
+import com.unrealdinnerbone.yastm.packet.PacketOpenSetFrequencyGUI;
+import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
+import com.unrealdinnerbone.yaum.api.IYaumMod;
+import com.unrealdinnerbone.yaum.api.register.IYaumBlock;
+import com.unrealdinnerbone.yaum.api.register.annotation.Register;
+import com.unrealdinnerbone.yaum.libs.DimBlockPos;
+import com.unrealdinnerbone.yaum.network.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -23,17 +24,18 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
-public class BlockTeleporter extends Block implements ITileEntityProvider {
+@Register(modID = Reference.MOD_ID)
+public class BlockTeleporter extends Block implements ITileEntityProvider, IYaumBlock {
 
     private final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
 
     public BlockTeleporter() {
         super(Material.GROUND, MapColor.CYAN);
-        this.setUnlocalizedName("teleporter");
         this.fullBlock = false;
         this.setLightOpacity(255);
         this.setCreativeTab(CreativeTabs.TRANSPORTATION);
@@ -81,7 +83,6 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
         YatmWorldSaveData.get(worldIn).removeDimBlockPos(new DimBlockPos(pos, worldIn.provider.getDimension()));
     }
-
     @Override
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
         if (!worldIn.isRemote && entityIn instanceof EntityPlayer) {
@@ -91,4 +92,19 @@ public class BlockTeleporter extends Block implements ITileEntityProvider {
         }
     }
 
+    @Override
+    public Block get() {
+        return this;
+    }
+
+    @Override
+    public String getName() {
+        return "teleporter";
+    }
+
+    @Override
+    public void register(RegistryEvent.Register<Block> registryEvent, IYaumMod mod) {
+        IYaumBlock.super.register(registryEvent, mod);
+        GameRegistry.registerTileEntity(TileEntityTeleporter.class, "te" + getName());
+    }
 }

@@ -1,7 +1,7 @@
-package com.unrealdinnerbone.yatm.common.event.register;
+package com.unrealdinnerbone.yastm.common.event.register;
 
-import com.unrealdinnerbone.yatm.api.TelerporterEffect;
-import com.unrealdinnerbone.yatm.lib.Reference;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.lib.Reference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;

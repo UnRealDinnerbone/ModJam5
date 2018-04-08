@@ -1,4 +1,4 @@
-## Beta-1.0.1
+## Beta-2.0.0
 <ul>
-<li>Fixed Mod not starting in normal mc ways </li>
+<li>Changed mod over to use Yaum</li>
 </ul>

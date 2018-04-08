@@ -1,8 +1,7 @@
-package com.unrealdinnerbone.yatm.api;
+package com.unrealdinnerbone.yastm.api;
 
-import com.unrealdinnerbone.yatm.lib.DimBlockPos;
+import com.unrealdinnerbone.yaum.libs.DimBlockPos;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
