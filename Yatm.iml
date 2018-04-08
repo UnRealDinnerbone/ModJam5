@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="Yatm" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="com.unrealdinnerbone" external.system.module.version="1.0.0" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="Yatm" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="com.unrealdinnerbone.yastm" external.system.module.version="1.12.2-1.0.1-universal" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="minecraft" name="Minecraft">
       <configuration>
@@ -9,6 +9,20 @@
         </autoDetectTypes>
       </configuration>
     </facet>
+  </component>
+  <component name="McpModuleSettings">
+    <option name="mappingFiles">
+      <set>
+        <option value="C:\Users\unrea\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20180127\1.12.2\srgs\mcp-notch.srg" />
+        <option value="C:\Users\unrea\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20180127\1.12.2\srgs\srg.exc" />
+        <option value="C:\Users\unrea\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20180127\1.12.2\srgs\notch-srg.srg" />
+        <option value="C:\Users\unrea\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20180127\1.12.2\srgs\mcp-srg.srg" />
+        <option value="C:\Users\unrea\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20180127\1.12.2\srgs\notch-mcp.srg" />
+        <option value="C:\Users\unrea\.gradle\caches\minecraft\de\oceanlabs\mcp\mcp_snapshot\20180127\1.12.2\srgs\mcp.exc" />
+      </set>
+    </option>
+    <option name="mcpVersion" value="snapshot_20180127" />
+    <option name="minecraftVersion" value="1.12.2" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -80,7 +94,7 @@
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209:natives-windows" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209:natives-linux" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209:natives-osx" level="project" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:forgeSrc:1.12.2-14.23.2.2611" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:forgeSrc:1.12.2-14.23.2.2611-PROJECT(Yatm)" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: compileDummy" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: providedDummy" level="project" />
     <orderEntry type="module-library" scope="RUNTIME">
