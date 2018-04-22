@@ -4,10 +4,10 @@ import com.unrealdinnerbone.yastm.lib.Reference;
 import com.unrealdinnerbone.yastm.packet.PacketOpenSetFrequencyGUI;
 import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
 import com.unrealdinnerbone.yaum.api.IYaumMod;
-import com.unrealdinnerbone.yaum.api.register.IYaumBlock;
 import com.unrealdinnerbone.yaum.api.register.annotation.Register;
+import com.unrealdinnerbone.yaum.api.register.impl.IYaumBlock;
+import com.unrealdinnerbone.yaum.common.network.PacketHandler;
 import com.unrealdinnerbone.yaum.libs.DimBlockPos;
-import com.unrealdinnerbone.yaum.network.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
@@ -29,17 +29,16 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import javax.annotation.Nullable;
 
-@Register(modID = Reference.MOD_ID)
+@Register(Reference.MOD_ID)
 public class BlockTeleporter extends Block implements ITileEntityProvider, IYaumBlock {
 
-    private final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
+    private final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D);
 
     public BlockTeleporter() {
         super(Material.GROUND, MapColor.CYAN);
         this.fullBlock = false;
         this.setLightOpacity(255);
         this.setCreativeTab(CreativeTabs.TRANSPORTATION);
-
     }
 
     public boolean isFullCube(IBlockState state) {
@@ -60,10 +59,6 @@ public class BlockTeleporter extends Block implements ITileEntityProvider, IYaum
         return new TileEntityTeleporter();
     }
 
-    @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return true;
-    }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
@@ -73,7 +68,7 @@ public class BlockTeleporter extends Block implements ITileEntityProvider, IYaum
             if (playerIn instanceof EntityPlayerMP) {
                 YatmWorldSaveData saveData = YatmWorldSaveData.get(worldIn);
                 DimBlockPos dimBlockPos = new DimBlockPos(pos, worldIn.provider.getDimension());
-                PacketHandler.INSTANCE.sendTo(new PacketOpenSetFrequencyGUI(dimBlockPos, saveData.getIDFormPos(dimBlockPos), tileEntityTeleporter.getFrequencyEffect()), (EntityPlayerMP) playerIn);
+                PacketHandler.INSTANCE.sendTo(new PacketOpenSetFrequencyGUI(dimBlockPos, saveData.getIDFormPos(dimBlockPos), tileEntityTeleporter.getTelerporterEffect(), tileEntityTeleporter.getTeleporterParticleEffect()), (EntityPlayerMP) playerIn);
             }
         }
         return true;
@@ -83,14 +78,7 @@ public class BlockTeleporter extends Block implements ITileEntityProvider, IYaum
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
         YatmWorldSaveData.get(worldIn).removeDimBlockPos(new DimBlockPos(pos, worldIn.provider.getDimension()));
     }
-    @Override
-    public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        if (!worldIn.isRemote && entityIn instanceof EntityPlayer) {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            TileEntityTeleporter tileEntityTeleporter = (TileEntityTeleporter) tileEntity;
-            tileEntityTeleporter.onEntityWalk((EntityPlayer) entityIn);
-        }
-    }
+
 
     @Override
     public Block get() {

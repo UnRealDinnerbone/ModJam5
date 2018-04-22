@@ -6,11 +6,12 @@ import com.unrealdinnerbone.yaum.api.register.IYaumObject;
 import com.unrealdinnerbone.yaum.api.register.annotation.Register;
 import com.unrealdinnerbone.yaum.libs.DimBlockPos;
 import com.unrealdinnerbone.yaum.libs.helpers.ParticleHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
-@Register(modID = Reference.MOD_ID)
+@Register(Reference.MOD_ID)
 public class CrissCrossEffect extends TelerporterEffect implements IYaumObject<TelerporterEffect> {
 
     @Override
@@ -19,18 +20,19 @@ public class CrissCrossEffect extends TelerporterEffect implements IYaumObject<T
     }
 
     @Override
-    public void spawnTeleportEffect(World world, DimBlockPos blockPos, EntityPlayer player) {
+    public void spawnTeleportEffect(EnumParticleTypes particleType, World world, DimBlockPos blockPos, Entity player) {
 
     }
 
     @Override
-    public void spawnTelportArriveEffect(World world, DimBlockPos blockPos, EntityPlayer player) {
+    public void spawnTelportArriveEffect(EnumParticleTypes particleType, World world, DimBlockPos blockPos, Entity player) {
 
     }
 
     @Override
-    public void spawnPreTeleportEffect(World world, DimBlockPos blockPos, double count) {
-        ParticleHelper.spawnParticleRing(world, EnumParticleTypes.FLAME,  blockPos.getX() + 0.5,  blockPos.getY() + (count / 9.0),   blockPos.getZ() + 0.5, 0, 0.1, 0, 1);
+    public void spawnPreTeleportEffect(EnumParticleTypes particleType, World world, DimBlockPos blockPos, double count) {
+        ParticleHelper.spawnParticleRing(world, particleType,  blockPos.getX() + 0.5,  blockPos.getY() + (count / 9.0),   blockPos.getZ() + 0.5, 0, 0.1, 0, 1);
+
     }
 
     @Override

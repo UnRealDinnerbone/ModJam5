@@ -13,7 +13,7 @@ import java.util.*;
 public class YatmWorldSaveData extends WorldSavedData {
 
 
-    private static final String DATA_NAME = Reference.MOD_ID + "_TelerporterData";
+    private static final String DATA_NAME = Reference.MOD_ID + "_TeleporterData";
     private HashMap<Integer, List<DimBlockPos>> postions;
 
     public YatmWorldSaveData() {
@@ -27,7 +27,7 @@ public class YatmWorldSaveData extends WorldSavedData {
     }
 
 
-    public void addTelporter(int id, DimBlockPos blockPos) {
+    public void addTeleporter(int id, DimBlockPos blockPos) {
         if(blockPos != null) {
             if(!this.postions.containsKey(id) && id != 0) {
                 this.postions.put(id, new ArrayList<>());

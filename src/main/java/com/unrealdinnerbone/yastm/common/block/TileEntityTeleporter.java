@@ -1,33 +1,43 @@
 package com.unrealdinnerbone.yastm.common.block;
 
+import com.unrealdinnerbone.yastm.Yastm;
+import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
 import com.unrealdinnerbone.yastm.api.TelerporterEffect;
-import com.unrealdinnerbone.yastm.common.event.register.EventRegisterRegisters;
+import com.unrealdinnerbone.yastm.lib.YastmRegistries;
 import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
+import com.unrealdinnerbone.yaum.common.tile.YaumTileEntity;
 import com.unrealdinnerbone.yaum.libs.DimBlockPos;
 import com.unrealdinnerbone.yaum.libs.helpers.TelporterHelper;
+import com.unrealdinnerbone.yaum.libs.utils.NoNullUtil;
+import com.unrealdinnerbone.yaum.libs.utils.RegistryUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TileEntityTeleporter extends TileEntity  {
+public class TileEntityTeleporter extends YaumTileEntity implements ITickable {
 
-    private TelerporterEffect frequencyEffect;
-    private int count;
+    private int countTime;
+    private TelerporterEffect telerporterEffect;
+    private TeleporterParticleEffect teleporterParticleEffect;
 
 
     public TileEntityTeleporter() {
-        this.frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
+        this.telerporterEffect = RegistryUtils.getFirstValue(YastmRegistries.getFrequencyRegistry());
+        this.teleporterParticleEffect = RegistryUtils.getFirstValue(YastmRegistries.getParticleEffectsRegistry());
+        this.countTime = 0;
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         NBTTagCompound myCompund = compound.copy();
         NBTTagCompound tagCompound = new NBTTagCompound();
-        tagCompound.setString("name", this.frequencyEffect.getRegistryName().toString());
+        tagCompound.setString("effect", this.telerporterEffect.getRegistryName().toString());
+        tagCompound.setString("peffect", this.teleporterParticleEffect.getRegistryName().toString());
         myCompund.setTag("yastm", tagCompound);
         return super.writeToNBT(myCompund);
     }
@@ -37,57 +47,75 @@ public class TileEntityTeleporter extends TileEntity  {
         super.readFromNBT(compound);
         if(compound.hasKey("yastm")) {
             NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yastm");
-            if(tagCompound.hasKey("name")) {
-                String name = tagCompound.getString("name");
-                Set<Map.Entry<ResourceLocation, TelerporterEffect>> registry = EventRegisterRegisters.getFrequencyRegistry().getEntries();
-                for(Map.Entry<ResourceLocation, TelerporterEffect> entry: registry) {
-                    if(name.equalsIgnoreCase(entry.getValue().getRegistryName().toString())) {
-                        this.frequencyEffect = entry.getValue();
-                        return;
-                    }
-                }
-                this.frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
+            if(tagCompound.hasKey("effect")) {
+                String name = tagCompound.getString("effect");
+                TelerporterEffect effect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), name);
+                this.telerporterEffect = effect != null ? effect : RegistryUtils.getFirstValue(YastmRegistries.getFrequencyRegistry());
+            } else {
+                this.telerporterEffect = RegistryUtils.getFirstValue(YastmRegistries.getFrequencyRegistry());
+            }
+            if(tagCompound.hasKey("peffect")) {
+                String name = tagCompound.getString("peffect");
+                TeleporterParticleEffect effect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getParticleEffectsRegistry(), name);
+                this.teleporterParticleEffect = NoNullUtil.getObjectOrElseNotNull(effect, RegistryUtils.getFirstValue(YastmRegistries.getParticleEffectsRegistry()));
 
             } else {
-                this.frequencyEffect = EventRegisterRegisters.getFrequencyRegistry().getEntries().stream().findFirst().get().getValue();
+                this.teleporterParticleEffect = RegistryUtils.getFirstValue(YastmRegistries.getParticleEffectsRegistry());
             }
 
         }
     }
 
-    public void onEntityWalk(EntityPlayer entityPlayer) {
-        YatmWorldSaveData worldSaveData = YatmWorldSaveData.get(world);
-        DimBlockPos pos = new DimBlockPos(this.pos, world.provider.getDimension());
-        if (worldSaveData.hasTwin(pos)) {
-            count++;
-            frequencyEffect.spawnPreTeleportEffect(world, pos, count);
-            if (count >= frequencyEffect.getTelerportTime()) {
-                DimBlockPos blockPos = worldSaveData.getTwin(pos);
-                if (blockPos != null) {
-                    count = 0;
-                    frequencyEffect.spawnTeleportEffect(world, pos, entityPlayer);
-                    TelporterHelper.performTeleport(entityPlayer, blockPos.getDimID(), blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
-                    frequencyEffect.spawnTelportArriveEffect(world, blockPos, entityPlayer);
-                }
-            }
-        }
+
+    public TelerporterEffect getTelerporterEffect() {
+        return telerporterEffect;
     }
 
-    public TelerporterEffect getFrequencyEffect() {
-        return frequencyEffect;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public boolean doParticleSpawn() {
-        return (count <= frequencyEffect.getTelerportTime()) && count != 0;
-    }
-
-    public void setFrequencyEffect(TelerporterEffect frequencyEffect) {
-        this.frequencyEffect = frequencyEffect;
+    public void setTelerporterEffect(TelerporterEffect telerporterEffect) {
+        this.telerporterEffect = telerporterEffect;
         markDirty();
     }
 
+    public void setTeleporterParticleEffect(TeleporterParticleEffect teleporterParticleEffect) {
+        this.teleporterParticleEffect = teleporterParticleEffect;
+        markDirty();
+    }
+
+    public TeleporterParticleEffect getTeleporterParticleEffect() {
+        return teleporterParticleEffect;
+    }
+
+    @Override
+    public void update() {
+        List<Entity> entities = scanForEntiesOnBlock();
+        if(entities.size() > 0) {
+            YatmWorldSaveData worldSaveData = YatmWorldSaveData.get(world);
+            DimBlockPos pos = new DimBlockPos(this.pos, world.provider.getDimension());
+            if (worldSaveData.hasTwin(pos)) {
+                telerporterEffect.spawnPreTeleportEffect(teleporterParticleEffect.getEffect(), world, pos, countTime++);
+                if (countTime >= telerporterEffect.getTelerportTime()) {
+                    DimBlockPos twinBlockPos = worldSaveData.getTwin(pos);
+                    if (twinBlockPos != null) {
+                        countTime = 0;
+                        telerporterEffect.spawnTeleportEffect(teleporterParticleEffect.getEffect(), world, pos, entities.get(0));
+                        TelporterHelper.performTeleport(entities.get(0), twinBlockPos.getDimID(), twinBlockPos.getX() + 0.5, twinBlockPos.getY() + 0.125, twinBlockPos.getZ() + 0.5);
+                        telerporterEffect.spawnTelportArriveEffect(teleporterParticleEffect.getEffect(), world, twinBlockPos, entities.get(0));
+                        entities.get(0).setSneaking(false);
+                    } else {
+                        Yastm.INSTANCE.getLogHelper().error("This should not happen");
+                    }
+                }
+
+            }
+        }else {
+            this.countTime = 0;
+        }
+    }
+
+    public List<Entity> scanForEntiesOnBlock() {
+        List<Entity> entities = getWorld().getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(getPos(), getPos().add(1, 2, 1)));
+        List<Entity> goodEnties = new ArrayList<>();
+        entities.stream().filter(entity ->  !(entity == null || entity.isDead || entity.isRiding() || !entity.isSneaking())).forEach(goodEnties::add);
+        return goodEnties;
+    }
 }

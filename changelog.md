@@ -1,4 +1,4 @@
-## Beta-2.0.0
+## Beta-2.0.1
 <ul>
-<li>Changed mod over to use Yaum</li>
+<li>Fixed the crash</li>
 </ul>

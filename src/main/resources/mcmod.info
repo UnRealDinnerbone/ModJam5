@@ -1,7 +1,7 @@
 [
   {
     "modid": "yastm",
-    "name": "Yastm",
+    "name": "Yet Another Simple Telrpoter Mod",
     "description": "Yet Another Simple Telrpoter Mod",
     "version": "${version}",
     "mcversion": "${mcversion}",
@@ -12,6 +12,8 @@
     ],
     "credits": "",
     "logoFile": "",
-    "screenshots": []
+    "screenshots": [],
+    "requiredMods": ["yaum"],
+    "dependencies": ["yaum"]
   }
 ]

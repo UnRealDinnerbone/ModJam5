@@ -1,107 +1,99 @@
 package com.unrealdinnerbone.yastm.client.gui;
 
-import com.unrealdinnerbone.yastm.api.TelerporterEffect;
 import com.unrealdinnerbone.yastm.lib.Reference;
+import com.unrealdinnerbone.yastm.lib.YastmRegistries;
 import com.unrealdinnerbone.yastm.packet.PacketSetFrequency;
+import com.unrealdinnerbone.yaum.client.gui.YaumGUIScreen;
+import com.unrealdinnerbone.yaum.client.gui.button.GUIButtonToggleThoughList;
+import com.unrealdinnerbone.yaum.common.network.PacketHandler;
 import com.unrealdinnerbone.yaum.libs.DimBlockPos;
-import com.unrealdinnerbone.yaum.network.PacketHandler;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GUISelectFrequency extends GuiScreen {
+public class GUISelectFrequency extends YaumGUIScreen {
 
     private final ResourceLocation TEXTURE_BLANK = new ResourceLocation(Reference.MOD_ID, "textures/gui/empty.png");
 
-    private int id;
-    private DimBlockPos pos;
+    private DimBlockPos blockPos;
+    private String effect;
+    private String particleEffect;
 
-    private final int START_ID;
-    private final BlockPos START_POS;
-    private final TelerporterEffect START_EFFECT;
 
-    private GUIButtonFrequency ADD_1;
-    private GUIButtonFrequency ADD_10;
-    private GUIButtonFrequency ADD_100;
-    private GUIButtonFrequency REMOVE_1;
-    private GUIButtonFrequency REMOVE_10;
-    private GUIButtonFrequency REMOVE_100;
+    private GUIButtonToggleThoughList effectSelectButton;
+    private GUIButtonToggleThoughList particleEffectSelectButton;
 
-    private GUIButtoEffectType frequencyButton;
+    List<String> frequenyNames;
+    List<String> particleEffectNames;
 
-    private GuiTextField frequency;
+    private GuiTextField frequencyID;
 
-    private TelerporterEffect effect;
+    private final int id;
 
 
 
-    public GUISelectFrequency(DimBlockPos pos, int id, TelerporterEffect effect) {
+    public GUISelectFrequency(DimBlockPos pos, int frequencyID, String effect, String particleEffect) {
         super();
-        this.pos = pos;
-        this.id = id;
-        this.START_POS = pos;
-        this.START_ID = id;
+        this.blockPos = pos;
+        this.id = frequencyID;
         this.effect = effect;
-        this.START_EFFECT = effect;
+        this.particleEffect = particleEffect;
+        frequenyNames = new ArrayList<>();
+        particleEffectNames = new ArrayList<>();
+        YastmRegistries.getFrequencyRegistry().forEach( name -> frequenyNames.add(name.getRegistryName().toString()));
+        YastmRegistries.getParticleEffectsRegistry().forEach( name -> particleEffectNames.add(name.getRegistryName().toString()));
+
     }
 
     @Override
     public void initGui() {
-
         super.initGui();
         int width = this.width / 2;
         int height = this.height / 2;
         int centerX = (this.width / 2) - 256 / 2;
         int centerY = (this.height / 2) - 158 / 2;
         int offest = 8;
-        ADD_1 = this.addButton(new GUIButtonFrequency(centerX + offest, height + 20,  -100));
-        ADD_10 = this.addButton(new GUIButtonFrequency(centerX + (40) + offest, height + 20,  -10));
-        ADD_100 = this.addButton(new GUIButtonFrequency( centerX + (40 * 2) + offest, height + 20,  -1));
-        REMOVE_1 = this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20,  +1));
-        REMOVE_10 = this.addButton(new GUIButtonFrequency(  centerX +(40 * 4) + offest, height + 20,  +10));
-        REMOVE_100 = this.addButton(new GUIButtonFrequency(centerX + (40 * 5) + offest, height + 20, +100));
-        frequencyButton = this.addButton(new GUIButtoEffectType(centerX + (32), height - 70, effect));
-        this.frequency = new GuiTextField(10, this.fontRenderer, width - 32, height - 10, 64, 20);
-        this.frequency.setFocused(true);
+        this.addButton(new GUIButtonFrequency(centerX + offest, height + 20,  -100));
+        this.addButton(new GUIButtonFrequency(centerX + (40) + offest, height + 20,  -10));
+        this.addButton(new GUIButtonFrequency( centerX + (40 * 2) + offest, height + 20,  -1));
+        this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20,  +1));
+        this.addButton(new GUIButtonFrequency(  centerX +(40 * 4) + offest, height + 20,  +10));
+        this.addButton(new GUIButtonFrequency(centerX + (40 * 5) + offest, height + 20, +100));
+        effectSelectButton = this.addButton(new GUIButtonToggleThoughList(centerX + (32), height - 70, frequenyNames));
+        effectSelectButton.setDisplayString(effect);
+        particleEffectSelectButton = this.addButton(new GUIButtonToggleThoughList(centerX + (32), height - 70 + 32, particleEffectNames));
+        particleEffectSelectButton.setDisplayString(particleEffect);
+        this.frequencyID = new GuiTextField(10, this.fontRenderer, width - 32, height - 10, 64, 20);
+        this.frequencyID.setText(String.valueOf(id));
+        this.frequencyID.setFocused(true);
+        this.frequencyID.setEnabled(true);
 
     }
 
     public void actionPerformed(GuiButton button, int mouseButton) throws IOException {
-        super.actionPerformed(button);
+        super.actionPerformed(button, mouseButton);
         if (button instanceof GUIButtonFrequency) {
+            int id = getID();
             id += ((GUIButtonFrequency) button).getAmount();
-        }else
-        if (button instanceof GUIButtoEffectType) {
-            if(mouseButton == 0) {
-                ((GUIButtoEffectType) button).goNext();
-            }else {
-                ((GUIButtoEffectType) button).goBack();
-            }
+            this.frequencyID.setText(String.valueOf(id));
         }
     }
 
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-            for (int i = 0; i < this.buttonList.size(); ++i) {
-                GuiButton guibutton = this.buttonList.get(i);
+    public int getID() {
+        int id;
+        try {
+            id = Integer.parseInt(this.frequencyID.getText());
 
-                if (guibutton.mousePressed(this.mc, mouseX, mouseY)) {
-                    net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre event = new net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre(this, guibutton, this.buttonList);
-                    if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
-                        break;
-                    guibutton = event.getButton();
-                    this.selectedButton = guibutton;
-                    guibutton.playPressSound(this.mc.getSoundHandler());
-                    this.actionPerformed(guibutton);
-                    if (this.equals(this.mc.currentScreen))
-                        this.actionPerformed(event.getButton(), mouseButton);
-                }
-            }
+        }catch (NumberFormatException ex) {
+            id = 0;
+        }
+        return id;
     }
+
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
@@ -110,19 +102,16 @@ public class GUISelectFrequency extends GuiScreen {
         int centerY = (height / 2) - 158 / 2;
         this.mc.getTextureManager().bindTexture(TEXTURE_BLANK);
         drawTexturedModalRect(centerX, centerY, 0, 0, 256, 158);
-
-        this.frequency.setText(String.valueOf(id));
-        this.frequency.drawTextBox();
+        this.frequencyID.drawTextBox();
         super.drawScreen(mouseX, mouseY, partialTicks);
+        this.frequencyID.setFocused(true);
+        this.frequencyID.setEnabled(true);
 
     }
 
-    //Todo
     @Override
     public void onGuiClosed() {
-        if(START_ID != id || !frequencyButton.getEffect().getRegistryName().toString().equalsIgnoreCase(START_EFFECT.getRegistryName().toString())) {
-            PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(pos, id, START_POS, START_ID, frequencyButton.getEffect(), START_EFFECT));
-        }
+        PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(blockPos, getID(), effectSelectButton.getDisplayString(), particleEffectSelectButton.getDisplayString()));
     }
 
     @Override

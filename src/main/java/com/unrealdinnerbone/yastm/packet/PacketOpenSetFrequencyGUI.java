@@ -1,11 +1,14 @@
 package com.unrealdinnerbone.yastm.packet;
 
+import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
 import com.unrealdinnerbone.yastm.api.TelerporterEffect;
 import com.unrealdinnerbone.yastm.client.gui.GUISelectFrequency;
 import com.unrealdinnerbone.yastm.common.event.register.EventRegisterRegisters;
+import com.unrealdinnerbone.yastm.lib.YastmRegistries;
 import com.unrealdinnerbone.yaum.Yaum;
 import com.unrealdinnerbone.yaum.api.network.ISimplePacket;
 import com.unrealdinnerbone.yaum.libs.DimBlockPos;
+import com.unrealdinnerbone.yaum.libs.utils.RegistryUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -24,16 +27,17 @@ public class PacketOpenSetFrequencyGUI implements ISimplePacket<PacketOpenSetFre
     private DimBlockPos blockPos;
     private int ID;
     private TelerporterEffect effect;
-
+    private TeleporterParticleEffect particleEffect;
 
     public PacketOpenSetFrequencyGUI() {
 
     }
 
-    public PacketOpenSetFrequencyGUI(DimBlockPos pos, int id, TelerporterEffect effect) {
+    public PacketOpenSetFrequencyGUI(DimBlockPos pos, int id, TelerporterEffect effect, TeleporterParticleEffect particleEffect) {
         this.ID = id;
         this.blockPos = pos;
         this.effect = effect;
+        this.particleEffect = particleEffect;
     }
 
     @Override
@@ -43,12 +47,12 @@ public class PacketOpenSetFrequencyGUI implements ISimplePacket<PacketOpenSetFre
         ID = buf.readInt();
         int l = buf.readInt();
         CharSequence name = buf.readCharSequence(l, StandardCharsets.UTF_8);
-        for (Map.Entry<ResourceLocation, TelerporterEffect> entry : EventRegisterRegisters.getFrequencyRegistry().getEntries()) {
-            if (entry.getValue().getRegistryName().toString().equalsIgnoreCase(name.toString())) {
-                effect = entry.getValue();
-                break;
-            }
-        }
+        this.effect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), name.toString());
+
+        int l1 = buf.readInt();
+        CharSequence name2 = buf.readCharSequence(l1, StandardCharsets.UTF_8);
+        this.particleEffect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getParticleEffectsRegistry(), name2.toString());
+
     }
 
     @Override
@@ -58,6 +62,9 @@ public class PacketOpenSetFrequencyGUI implements ISimplePacket<PacketOpenSetFre
         buf.writeInt(ID);
         buf.writeInt(effect.getRegistryName().toString().length());
         buf.writeCharSequence(effect.getRegistryName().toString(), StandardCharsets.UTF_8);
+
+        buf.writeInt(particleEffect.getRegistryName().toString().length());
+        buf.writeCharSequence(particleEffect.getRegistryName().toString(), StandardCharsets.UTF_8);
     }
 
     public int getID() {
@@ -72,9 +79,13 @@ public class PacketOpenSetFrequencyGUI implements ISimplePacket<PacketOpenSetFre
         return effect;
     }
 
+    public TeleporterParticleEffect getParticleEffect() {
+        return particleEffect;
+    }
+
     @SideOnly(Side.CLIENT)
     private void handle(PacketOpenSetFrequencyGUI message, MessageContext ctx) {
-        Yaum.proxy.displayGUIScreen(new GUISelectFrequency(message.getBlockPos(), message.getID(), message.getEffect()));
+        Yaum.proxy.displayGUIScreen(new GUISelectFrequency(message.getBlockPos(), message.getID(), message.getEffect().getRegistryName().toString(), message.getParticleEffect().getRegistryName().toString()));
     }
 
     @Override
