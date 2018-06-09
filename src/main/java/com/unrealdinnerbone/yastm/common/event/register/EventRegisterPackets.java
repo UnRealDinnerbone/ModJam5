@@ -13,7 +13,7 @@ public class EventRegisterPackets
 {
     @SubscribeEvent
     public static void registerPackets(PacketRegisterEvent event) {
-        event.registerMessage(PacketOpenSetFrequencyGUI.class, PacketOpenSetFrequencyGUI.class, Side.CLIENT);
-        event.registerMessage(PacketSetFrequency.class, PacketSetFrequency.class, Side.SERVER);
+        event.registerMessage(PacketOpenSetFrequencyGUI.class, Side.CLIENT);
+        event.registerMessage(PacketSetFrequency.class, Side.SERVER);
     }
 }

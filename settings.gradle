@@ -1,0 +1,4 @@
+rootProject.name = 'Yastm'
+
+include 'Yaum'
+project(":Yaum").projectDir = file("../Yaum")

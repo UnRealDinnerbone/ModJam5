@@ -33,6 +33,6 @@ public class EventEffectRegister {
             public EnumParticleTypes getEffect() {
                 return type;
             }
-        }.setRegistryName(new ResourceLocation("minecraft", type.name().toLowerCase())));
+        }.setRegistryName(new ResourceLocation(Reference.MOD_ID, type.name().toLowerCase())));
     }
 }

@@ -1,15 +1,10 @@
 package com.unrealdinnerbone.yastm.packet;
 
-import com.unrealdinnerbone.yastm.Yastm;
-import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
-import com.unrealdinnerbone.yastm.api.TelerporterEffect;
 import com.unrealdinnerbone.yastm.common.block.TileEntityTeleporter;
-import com.unrealdinnerbone.yastm.common.event.register.EventRegisterRegisters;
 import com.unrealdinnerbone.yastm.lib.YastmRegistries;
 import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
 import com.unrealdinnerbone.yaum.api.network.ISimplePacket;
 import com.unrealdinnerbone.yaum.libs.DimBlockPos;
-import com.unrealdinnerbone.yaum.libs.utils.NoNullUtil;
 import com.unrealdinnerbone.yaum.libs.utils.RegistryUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -93,8 +89,8 @@ public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
                 yatmWorldSaveData.addTeleporter(message.getID(), message.getBlockPos());
                 yatmWorldSaveData.save(world);
                 TileEntityTeleporter telporter = (TileEntityTeleporter) tileEntity;
-                telporter.setTelerporterEffect(NoNullUtil.getObjectOrElseNotNull(RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), message.getEffectID()), telporter.getTelerporterEffect()));
-                telporter.setTeleporterParticleEffect(NoNullUtil.getObjectOrElseNotNull(RegistryUtils.getRegistryObjectFormName(YastmRegistries.getParticleEffectsRegistry(), message.getParticleID()), telporter.getTeleporterParticleEffect()));
+                telporter.setTelerporterEffect(ObjectUtils.defaultIfNull(RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), new ResourceLocation(message.getEffectID())), telporter.getTelerporterEffect()));
+                telporter.setTeleporterParticleEffect(ObjectUtils.defaultIfNull(RegistryUtils.getRegistryObjectFormName(YastmRegistries.getParticleEffectsRegistry(), new ResourceLocation(message.getParticleID())), telporter.getTeleporterParticleEffect()));
             }
         }
     }

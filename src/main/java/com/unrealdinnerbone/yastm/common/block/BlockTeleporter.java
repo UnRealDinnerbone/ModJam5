@@ -91,8 +91,9 @@ public class BlockTeleporter extends Block implements ITileEntityProvider, IYaum
     }
 
     @Override
-    public void register(RegistryEvent.Register<Block> registryEvent, IYaumMod mod) {
-        IYaumBlock.super.register(registryEvent, mod);
+    public void handleEventRegister(RegistryEvent.Register<Block> registryEvent, IYaumMod mod) {
+        IYaumBlock.super.handleEventRegister(registryEvent, mod);
         GameRegistry.registerTileEntity(TileEntityTeleporter.class, "te" + getName());
     }
+
 }

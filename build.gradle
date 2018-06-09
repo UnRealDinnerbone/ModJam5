@@ -58,7 +58,6 @@ processResources
             from(sourceSets.main.resources.srcDirs) {
                 exclude 'mcmod.info'
             }
-            rename '(.+_at.cfg)', 'META-INF/$1'
         }
 
 repositories {
@@ -72,25 +71,13 @@ repositories {
     }
 }
 
-configurations {
-    shade
-    compile.extendsFrom shade
-}
-
 dependencies {
-    files "libs/yaum-1.12.2-5.0.21.jar"
-}
-
-
-jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
-            exclude 'META-INF', 'META-INF/**'
-        }
+    try {
+        compile project(":Yaum")
+    } catch (Exception ignored) {
+        files "libs/yaum-1.12.2-4.1.0-universal.jar"
     }
-    manifest {
-        attributes 'FMLAT': 'yaum_at.cfg'
-    }
+
 }
 
 

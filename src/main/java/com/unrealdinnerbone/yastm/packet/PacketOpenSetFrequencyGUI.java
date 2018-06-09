@@ -47,11 +47,11 @@ public class PacketOpenSetFrequencyGUI implements ISimplePacket<PacketOpenSetFre
         ID = buf.readInt();
         int l = buf.readInt();
         CharSequence name = buf.readCharSequence(l, StandardCharsets.UTF_8);
-        this.effect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), name.toString());
+        this.effect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), new ResourceLocation(name.toString()));
 
         int l1 = buf.readInt();
         CharSequence name2 = buf.readCharSequence(l1, StandardCharsets.UTF_8);
-        this.particleEffect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getParticleEffectsRegistry(), name2.toString());
+        this.particleEffect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getParticleEffectsRegistry(), new ResourceLocation(name2.toString()));
 
     }
 

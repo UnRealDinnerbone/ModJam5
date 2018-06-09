@@ -42,6 +42,6 @@ public class CrissCrossEffect extends TelerporterEffect implements IYaumObject<T
 
     @Override
     public String getName() {
-        return "test_01";
+        return "crisscross";
     }
 }

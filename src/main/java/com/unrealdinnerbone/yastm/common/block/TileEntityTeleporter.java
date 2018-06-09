@@ -8,13 +8,14 @@ import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
 import com.unrealdinnerbone.yaum.common.tile.YaumTileEntity;
 import com.unrealdinnerbone.yaum.libs.DimBlockPos;
 import com.unrealdinnerbone.yaum.libs.helpers.TelporterHelper;
-import com.unrealdinnerbone.yaum.libs.utils.NoNullUtil;
 import com.unrealdinnerbone.yaum.libs.utils.RegistryUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,16 +50,13 @@ public class TileEntityTeleporter extends YaumTileEntity implements ITickable {
             NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yastm");
             if(tagCompound.hasKey("effect")) {
                 String name = tagCompound.getString("effect");
-                TelerporterEffect effect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), name);
-                this.telerporterEffect = effect != null ? effect : RegistryUtils.getFirstValue(YastmRegistries.getFrequencyRegistry());
+                this.telerporterEffect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), new ResourceLocation(name));
             } else {
                 this.telerporterEffect = RegistryUtils.getFirstValue(YastmRegistries.getFrequencyRegistry());
             }
             if(tagCompound.hasKey("peffect")) {
                 String name = tagCompound.getString("peffect");
-                TeleporterParticleEffect effect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getParticleEffectsRegistry(), name);
-                this.teleporterParticleEffect = NoNullUtil.getObjectOrElseNotNull(effect, RegistryUtils.getFirstValue(YastmRegistries.getParticleEffectsRegistry()));
-
+                this.teleporterParticleEffect = RegistryUtils.getObjectOrElseFirst(YastmRegistries.getParticleEffectsRegistry(), new ResourceLocation(name));
             } else {
                 this.teleporterParticleEffect = RegistryUtils.getFirstValue(YastmRegistries.getParticleEffectsRegistry());
             }

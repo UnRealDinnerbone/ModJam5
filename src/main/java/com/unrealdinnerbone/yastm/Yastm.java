@@ -7,7 +7,9 @@ import com.unrealdinnerbone.yaum.api.util.LogHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:yaum(5.0.21;")
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION
+//        , dependencies = "required-after:yaum@[5.0.21,);"
+)
 public class Yastm implements IYaumMod {
 
     @Mod.Instance(Reference.MOD_ID)
