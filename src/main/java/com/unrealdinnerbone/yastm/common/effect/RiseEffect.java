@@ -1,8 +1,8 @@
 package com.unrealdinnerbone.yastm.common.effect;
 
 import com.unrealdinnerbone.yastm.api.TelerporterEffect;
-import com.unrealdinnerbone.yaum.lib.DimBlockPos;
-import com.unrealdinnerbone.yaum.lib.util.ParticleHelper;
+import com.unrealdinnerbone.yastm.lib.DimBlockPos;
+import com.unrealdinnerbone.yastm.lib.util.ParticleHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -40,7 +40,6 @@ public class RiseEffect extends TelerporterEffect{
         for (int i = 0; i < 20; i++) {
             //Todo
             ParticleHelper.spawnParticleRing(world, particleType,  blockPos.getX() + 0.5,  blockPos.getY() + (i / 9.0),   blockPos.getZ() + 0.5, 0, 0, 0, 0.1);
-
         }
     }
 }

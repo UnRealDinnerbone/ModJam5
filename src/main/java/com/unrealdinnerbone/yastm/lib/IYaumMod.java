@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yaum.lib;
+package com.unrealdinnerbone.yastm.lib;
 
 public interface IYaumMod
 {

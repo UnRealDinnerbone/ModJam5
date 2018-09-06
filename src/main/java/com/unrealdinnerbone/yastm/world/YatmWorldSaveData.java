@@ -2,7 +2,7 @@ package com.unrealdinnerbone.yastm.world;
 
 import com.unrealdinnerbone.yastm.Yastm;
 import com.unrealdinnerbone.yastm.lib.TelerporterData;
-import com.unrealdinnerbone.yaum.lib.DimBlockPos;
+import com.unrealdinnerbone.yastm.lib.DimBlockPos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -50,8 +50,6 @@ public class YatmWorldSaveData extends WorldSavedData {
                 }
                 NBTTagList tells = nbtTagCompound.getTagList("teleporters", Constants.NBT.TAG_COMPOUND);
                 for (int x = 0; x < tells.tagCount(); x++) {
-                    DimBlockPos dimBlockPos = DimBlockPos.fromTagCompound(tells.getCompoundTagAt(x));
-                    System.out.println(dimBlockPos + " loop");
                     telerporterData.addTeleporter(tellID, DimBlockPos.fromTagCompound(tells.getCompoundTagAt(x)));
                 }
             }

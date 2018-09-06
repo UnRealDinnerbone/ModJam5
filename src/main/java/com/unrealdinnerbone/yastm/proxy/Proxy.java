@@ -1,4 +1,9 @@
 package com.unrealdinnerbone.yastm.proxy;
 
-public class Proxy {
+import com.unrealdinnerbone.yastm.packet.PacketOpenSetFrequencyGUI;
+
+public class Proxy
+{
+    public void openGUI(PacketOpenSetFrequencyGUI message) {
+    }
 }

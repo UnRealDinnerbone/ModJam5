@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yaum.lib.util;
+package com.unrealdinnerbone.yastm.lib.util;
 
 import java.util.concurrent.ThreadLocalRandom;
 

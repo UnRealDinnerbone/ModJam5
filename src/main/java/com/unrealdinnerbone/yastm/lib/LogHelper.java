@@ -1,6 +1,6 @@
-package com.unrealdinnerbone.yaum.lib;
+package com.unrealdinnerbone.yastm.lib;
 
-import com.unrealdinnerbone.yaum.lib.util.StringUtils;
+import com.unrealdinnerbone.yastm.lib.util.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 

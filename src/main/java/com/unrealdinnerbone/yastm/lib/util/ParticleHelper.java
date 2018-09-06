@@ -1,7 +1,5 @@
-package com.unrealdinnerbone.yaum.lib.util;
+package com.unrealdinnerbone.yastm.lib.util;
 
-import com.unrealdinnerbone.yaum.common.network.PacketHandler;
-import com.unrealdinnerbone.yaum.common.network.packets.PacketSpawnParticle;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
@@ -21,7 +19,8 @@ public class ParticleHelper {
     }
 
     public static void spawnParticle(int id, boolean shouldIgnoreRange, float x, float y, float z, float xSpeed, float ySpeed, float zSpeed, int dimID) {
-        PacketHandler.INSTANCE.sendToAll(new PacketSpawnParticle(getParticleFormID(id), x, y, z, zSpeed, ySpeed, zSpeed));
+//Todo
+            //        PacketHandler.INSTANCE.sendToAll(new PacketSpawnParticle(getParticleFormID(id), x, y, z, zSpeed, ySpeed, zSpeed));
     }
 
     public static void spawnParticle(EnumParticleTypes particleType, float x, float y, float z, float xSpeed, float ySpeed, float zSpeed, World world) {

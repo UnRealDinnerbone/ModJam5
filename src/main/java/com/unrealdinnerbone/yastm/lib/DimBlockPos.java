@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yaum.lib;
+package com.unrealdinnerbone.yastm.lib;
 
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NBTTagCompound;

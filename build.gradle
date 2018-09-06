@@ -18,16 +18,8 @@ apply plugin: 'maven'
 apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+
 def buildVersion = "${mod_verison}"
-
-def ENV = System.getenv()
-if (ENV.BUILD_NUMBER) {
-    buildVersion = buildVersion + "." + "${System.getenv().BUILD_NUMBER}"
-} else {
-    buildVersion = buildVersion + "localbeta"
-}
-
-<<<<<<< Updated upstream
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
     buildVersion = buildVersion + "." + "${System.getenv().BUILD_NUMBER}"
@@ -35,8 +27,6 @@ if (ENV.BUILD_NUMBER) {
     buildVersion = buildVersion + ".0-localbeta"
 }
 
-=======
->>>>>>> Stashed changes
 version = "${minecraft_version}-" + buildVersion + "-universal"
 
 group= "com.unrealdinnerbone.${mod_name}"
@@ -82,7 +72,6 @@ repositories {
 
 dependencies {
     compile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.22-13"
-    compile project(':Yaum')
 }
 
 

@@ -1,51 +1,44 @@
 package com.unrealdinnerbone.yastm.client.gui;
 
 import com.unrealdinnerbone.yastm.Yastm;
-import com.unrealdinnerbone.yaum.client.gui.GUIButtonToggleThoughList;
-import com.unrealdinnerbone.yaum.client.gui.YaumGUIScreen;
-import com.unrealdinnerbone.yaum.lib.DimBlockPos;
+import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.common.block.TileEntityTeleporter;
+import com.unrealdinnerbone.yastm.lib.DimBlockPos;
 import com.unrealdinnerbone.yastm.lib.YastmRegistries;
 import com.unrealdinnerbone.yastm.packet.PacketSetFrequency;
-import com.unrealdinnerbone.yaum.common.network.PacketHandler;
+import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
+import mcjty.theoneprobe.network.PacketHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class GUISelectFrequency extends YaumGUIScreen {
+public class GUISelectFrequency2 extends GUIScreenBase {
 
-    private final ResourceLocation TEXTURE_BLANK = new ResourceLocation(Yastm.MOD_ID, "textures/gui/empty.png");
+    private static final ResourceLocation TEXTURE_BLANK = new ResourceLocation(Yastm.MOD_ID, "textures/gui/empty.png");
 
-    private DimBlockPos blockPos;
-    private String effect;
-    private String particleEffect;
+    private final DimBlockPos DIM_BLOCK_POS;
+
+    private final TelerporterEffect EFFECT_OLD;
+    private final TeleporterParticleEffect PARTICLE_OLD;
+    private final int ID_OLD;
 
 
-    private GUIButtonToggleThoughList effectSelectButton;
-    private GUIButtonToggleThoughList particleEffectSelectButton;
+    private GUIButtonToggleThroughRegistry effectSelectButton;
+    private GUIButtonToggleThroughRegistry particleEffectSelectButton;
 
-    List<String> frequenyNames;
-    List<String> particleEffectNames;
-
+    //Todo allow users to type in ID's
     private GuiTextField frequencyID;
 
-    private final int id;
 
-
-    public GUISelectFrequency(DimBlockPos pos, int frequencyID, String effect, String particleEffect) {
-        super();
-        this.blockPos = pos;
-        this.id = frequencyID;
-        this.effect = effect;
-        this.particleEffect = particleEffect;
-        frequenyNames = new ArrayList<>();
-        particleEffectNames = new ArrayList<>();
-        YastmRegistries.getFrequencyRegistry().forEach(name -> frequenyNames.add(name.getRegistryName().toString()));
-        YastmRegistries.getParticleEffectsRegistry().forEach(name -> particleEffectNames.add(name.getRegistryName().toString()));
-
+    public GUISelectFrequency2(DimBlockPos blockPos, int id, TelerporterEffect telerporterEffect , TeleporterParticleEffect particleEffect) {
+        this.DIM_BLOCK_POS = blockPos;
+        this.ID_OLD = id;
+        this.EFFECT_OLD = telerporterEffect;
+        this.PARTICLE_OLD = particleEffect;
     }
 
     @Override
@@ -62,12 +55,12 @@ public class GUISelectFrequency extends YaumGUIScreen {
         this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20, +1));
         this.addButton(new GUIButtonFrequency(centerX + (40 * 4) + offest, height + 20, +10));
         this.addButton(new GUIButtonFrequency(centerX + (40 * 5) + offest, height + 20, +100));
-        effectSelectButton = this.addButton(new GUIButtonToggleThoughList(centerX + (32), height - 70, frequenyNames));
-        effectSelectButton.setDisplayString(effect);
-        particleEffectSelectButton = this.addButton(new GUIButtonToggleThoughList(centerX + (32), height - 70 + 32, particleEffectNames));
-        particleEffectSelectButton.setDisplayString(particleEffect);
+        GUIButtonToggleThroughRegistry<TeleporterParticleEffect> a;
+        a = new GUIButtonToggleThroughRegistry(0,0, YastmRegistries.getParticleEffectsRegistry(), PARTICLE_OLD);
+        effectSelectButton = this.addButton(new GUIButtonToggleThroughRegistry(centerX + (32), height - 70, YastmRegistries.getFrequencyRegistry(),  EFFECT_OLD));
+        particleEffectSelectButton = this.addButton(new GUIButtonToggleThroughRegistry(centerX + (32), height - 70 + 32, YastmRegistries.getParticleEffectsRegistry(),  PARTICLE_OLD));
         this.frequencyID = new GuiTextField(10, this.fontRenderer, width - 32, height - 10, 64, 20);
-        this.frequencyID.setText(String.valueOf(id));
+        this.frequencyID.setText(String.valueOf(ID_OLD));
         this.frequencyID.setFocused(true);
         this.frequencyID.setEnabled(true);
 
@@ -109,11 +102,14 @@ public class GUISelectFrequency extends YaumGUIScreen {
 
     @Override
     public void onGuiClosed() {
-        PacketHandler.INSTANCE.sendToServer(new PacketSetFrequency(blockPos, getID(), effectSelectButton.getDisplayString(), particleEffectSelectButton.getDisplayString()));
+        if (EFFECT_OLD.getRegistryName().equals(effectSelectButton.getActiveResourceRegistry().getRegistryName()) || PARTICLE_OLD.getRegistryName().equals(particleEffectSelectButton.getActiveResourceRegistry().getRegistryName()) || ID_OLD == getID()) {
+            Yastm.getNetworkWrapper().sendToServer(new PacketSetFrequency(DIM_BLOCK_POS, getID(), effectSelectButton.getDisplayString(), particleEffectSelectButton.getDisplayString()));
+        }
     }
 
     @Override
     public boolean doesGuiPauseGame() {
         return false;
     }
+
 }

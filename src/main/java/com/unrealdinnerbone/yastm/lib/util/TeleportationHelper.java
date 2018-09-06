@@ -1,6 +1,6 @@
-package com.unrealdinnerbone.yaum.lib.util;
+package com.unrealdinnerbone.yastm.lib.util;
 
-import com.unrealdinnerbone.yaum.lib.DimBlockPos;
+import com.unrealdinnerbone.yastm.lib.DimBlockPos;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,8 +1,12 @@
-package com.unrealdinnerbone.yaum.lib.util;
+package com.unrealdinnerbone.yastm.lib.util;
+
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class StringUtils
 {
@@ -17,6 +21,11 @@ public class StringUtils
             }
         }
         return list.stream().findFirst().get();
+    }
+
+
+    public static <T> T getNextObjectFormList(Set<T> list, T currentString) {
+       return getNextObjectFormList(list, currentString);
     }
 
     public static String format(String msg, Object... replacements) {

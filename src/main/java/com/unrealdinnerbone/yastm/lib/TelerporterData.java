@@ -1,7 +1,6 @@
 package com.unrealdinnerbone.yastm.lib;
 
 import com.unrealdinnerbone.yastm.Yastm;
-import com.unrealdinnerbone.yaum.lib.DimBlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

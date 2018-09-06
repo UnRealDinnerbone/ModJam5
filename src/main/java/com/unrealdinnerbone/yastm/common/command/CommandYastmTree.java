@@ -1,18 +1,22 @@
 package com.unrealdinnerbone.yastm.common.command;
 
-import com.unrealdinnerbone.yastm.Yastm;
-import com.unrealdinnerbone.yaum.common.command.YaumCommandTreeBase;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.server.command.CommandTreeBase;
 
-import java.util.stream.Collectors;
-
-public class CommandYastmTree extends YaumCommandTreeBase {
-
+public class CommandYastmTree extends CommandTreeBase {
 
     public CommandYastmTree() {
-        super(Yastm.getInstance());
+        super();
         addSubcommand(new CommandListTelerporters());
     }
 
+    @Override
+    public String getName() {
+        return "Yastm";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return null;
+    }
 }

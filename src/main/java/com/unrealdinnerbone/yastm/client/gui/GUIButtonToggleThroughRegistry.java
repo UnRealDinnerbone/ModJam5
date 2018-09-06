@@ -1,52 +1,44 @@
-package com.unrealdinnerbone.yaum.client.gui;
+package com.unrealdinnerbone.yastm.client.gui;
 
-import com.google.common.collect.Lists;
-import com.unrealdinnerbone.yaum.lib.util.StringUtils;
+import com.unrealdinnerbone.yastm.lib.util.RegistryUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class GUIButtonToggleThroughRegistry<> extends GuiButton {
+public class GUIButtonToggleThroughRegistry<R extends IForgeRegistryEntry.Impl<R>> extends GuiButton implements IDoubleActionButton {
 
     private static int idCount = 4100;
-    IForgeRegistry<> iForgeRegistry =
+    private IForgeRegistry<R> forgeRegistry;
 
-    public GUIButtonToggleThroughRegistry(int x, int y, R riForgeRegistry) {
+    private R activeResourceRegistry;
+
+
+    public GUIButtonToggleThroughRegistry(int x, int y, IForgeRegistry<R> forgeRegistry, R location) {
         super(idCount++, x, y, "");
-
+        this.forgeRegistry = forgeRegistry;
+        activeResourceRegistry = location;
+        updateString();
     }
 
+    @Override
+    public void updateString() {
+        this.displayString = activeResourceRegistry.getRegistryName().toString();
+    }
+
+    public void goBack() {
+        this.activeResourceRegistry = RegistryUtils.getNextObjectFormRegistry(forgeRegistry, activeResourceRegistry);
+    }
+
+    @Override
     public void goNext() {
-        String nextString = StringUtils.getNextObjectFormList(options, displayString);
-        this.setDisplayString(nextString);
-    }
-
-    public void setDisplayString(String string) {
-        this.displayString = string;
+        this.activeResourceRegistry = RegistryUtils.getLastObjectFromRegistry(forgeRegistry, activeResourceRegistry);
     }
 
     public String getDisplayString() {
         return this.displayString;
     }
 
-    public void setCurrentString(String currentString) {
-        this.displayString = currentString;
+    public R getActiveResourceRegistry() {
+        return activeResourceRegistry;
     }
-
-    public void goBack() {
-        this.setDisplayString(StringUtils.getNextObjectFormList(Lists.reverse(new ArrayList<>(options)), displayString));
-    }
-
-
-    public List<String> getOptions() {
-        return options;
-    }
-
-    public void setOptions(List<String> options) {
-        this.options = options;
-    }
-
-
 }

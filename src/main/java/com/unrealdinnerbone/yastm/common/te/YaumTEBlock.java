@@ -1,7 +1,7 @@
-package com.unrealdinnerbone.yaum.common.block.te;
+package com.unrealdinnerbone.yastm.common.te;
 
 
-import com.unrealdinnerbone.yaum.lib.util.ReflectionUtils;
+import com.unrealdinnerbone.yastm.lib.util.ReflectionUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;

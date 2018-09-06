@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yaum.client.gui;
+package com.unrealdinnerbone.yastm.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -7,7 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.io.IOException;
 
-public class YaumGUIScreen extends GuiScreen {
+public class GUIScreenBase extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
@@ -30,13 +30,6 @@ public class YaumGUIScreen extends GuiScreen {
     }
 
     protected void actionPerformed(GuiButton button, int mouseButton) throws IOException {
-        super.actionPerformed(button);
-        if (button instanceof GUIButtonToggleThoughList) {
-            if (mouseButton == 0) {
-                ((GUIButtonToggleThoughList) button).goNext();
-            } else {
-                ((GUIButtonToggleThoughList) button).goBack();
-            }
-        }
+        if (button instanceof IDoubleActionButton) ((IDoubleActionButton) button).onClick(mouseButton);
     }
 }
