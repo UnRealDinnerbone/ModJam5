@@ -1,10 +1,9 @@
 package com.unrealdinnerbone.yastm.packet;
 
 import com.unrealdinnerbone.yastm.common.block.TileEntityTeleporter;
-import com.unrealdinnerbone.yaum.lib.DimBlockPos;
-import com.unrealdinnerbone.yaum.common.network.ISimplePacket;
-import com.unrealdinnerbone.yaum.lib.util.RegistryUtils;
+import com.unrealdinnerbone.yastm.lib.DimBlockPos;
 import com.unrealdinnerbone.yastm.lib.YastmRegistries;
+import com.unrealdinnerbone.yastm.lib.util.RegistryUtils;
 import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -73,10 +73,9 @@ public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
         return particleID;
     }
 
-
     @Override
-    public void handlePacket(PacketSetFrequency message, EntityPlayer entityPlayer) {
-        World world = entityPlayer.getEntityWorld();
+    public void handlePacket(PacketSetFrequency message, MessageContext ctx) {
+        World world = ctx.getServerHandler().player.getEntityWorld();
         if (world.isBlockLoaded(message.getBlockPos().getBlockPos())) {
             TileEntity tileEntity = world.getTileEntity(message.getBlockPos().getBlockPos());
             if (tileEntity instanceof TileEntityTeleporter) {

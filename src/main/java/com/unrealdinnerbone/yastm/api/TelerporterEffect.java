@@ -1,8 +1,7 @@
 package com.unrealdinnerbone.yastm.api;
 
-import com.unrealdinnerbone.yaum.libs.DimBlockPos;
+import com.unrealdinnerbone.yaum.lib.DimBlockPos;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;

@@ -35,7 +35,6 @@ public class GUISelectFrequency extends YaumGUIScreen {
     private final int id;
 
 
-
     public GUISelectFrequency(DimBlockPos pos, int frequencyID, String effect, String particleEffect) {
         super();
         this.blockPos = pos;
@@ -44,8 +43,8 @@ public class GUISelectFrequency extends YaumGUIScreen {
         this.particleEffect = particleEffect;
         frequenyNames = new ArrayList<>();
         particleEffectNames = new ArrayList<>();
-        YastmRegistries.getFrequencyRegistry().forEach( name -> frequenyNames.add(name.getRegistryName().toString()));
-        YastmRegistries.getParticleEffectsRegistry().forEach( name -> particleEffectNames.add(name.getRegistryName().toString()));
+        YastmRegistries.getFrequencyRegistry().forEach(name -> frequenyNames.add(name.getRegistryName().toString()));
+        YastmRegistries.getParticleEffectsRegistry().forEach(name -> particleEffectNames.add(name.getRegistryName().toString()));
 
     }
 
@@ -57,11 +56,11 @@ public class GUISelectFrequency extends YaumGUIScreen {
         int centerX = (this.width / 2) - 256 / 2;
         int centerY = (this.height / 2) - 158 / 2;
         int offest = 8;
-        this.addButton(new GUIButtonFrequency(centerX + offest, height + 20,  -100));
-        this.addButton(new GUIButtonFrequency(centerX + (40) + offest, height + 20,  -10));
-        this.addButton(new GUIButtonFrequency( centerX + (40 * 2) + offest, height + 20,  -1));
-        this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20,  +1));
-        this.addButton(new GUIButtonFrequency(  centerX +(40 * 4) + offest, height + 20,  +10));
+        this.addButton(new GUIButtonFrequency(centerX + offest, height + 20, -100));
+        this.addButton(new GUIButtonFrequency(centerX + (40) + offest, height + 20, -10));
+        this.addButton(new GUIButtonFrequency(centerX + (40 * 2) + offest, height + 20, -1));
+        this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20, +1));
+        this.addButton(new GUIButtonFrequency(centerX + (40 * 4) + offest, height + 20, +10));
         this.addButton(new GUIButtonFrequency(centerX + (40 * 5) + offest, height + 20, +100));
         effectSelectButton = this.addButton(new GUIButtonToggleThoughList(centerX + (32), height - 70, frequenyNames));
         effectSelectButton.setDisplayString(effect);
@@ -88,7 +87,7 @@ public class GUISelectFrequency extends YaumGUIScreen {
         try {
             id = Integer.parseInt(this.frequencyID.getText());
 
-        }catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             id = 0;
         }
         return id;
@@ -96,8 +95,7 @@ public class GUISelectFrequency extends YaumGUIScreen {
 
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         int centerX = (width / 2) - 256 / 2;
         int centerY = (height / 2) - 158 / 2;
         this.mc.getTextureManager().bindTexture(TEXTURE_BLANK);

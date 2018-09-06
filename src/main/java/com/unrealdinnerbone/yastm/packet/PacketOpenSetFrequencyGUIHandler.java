@@ -2,16 +2,16 @@ package com.unrealdinnerbone.yastm.packet;
 
 import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
 import com.unrealdinnerbone.yastm.api.TelerporterEffect;
-import com.unrealdinnerbone.yastm.client.gui.GUISelectFrequency;
-import com.unrealdinnerbone.yaum.lib.DimBlockPos;
-import com.unrealdinnerbone.yaum.common.network.ISimplePacket;
-import com.unrealdinnerbone.yaum.lib.util.RegistryUtils;
+import com.unrealdinnerbone.yastm.client.gui.GUISelectFrequency2;
+import com.unrealdinnerbone.yastm.lib.DimBlockPos;
 import com.unrealdinnerbone.yastm.lib.YastmRegistries;
+import com.unrealdinnerbone.yastm.lib.util.RegistryUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.nio.charset.StandardCharsets;
 
@@ -77,8 +77,7 @@ public class PacketOpenSetFrequencyGUI implements ISimplePacket<PacketOpenSetFre
     }
 
     @Override
-    public void handlePacket(PacketOpenSetFrequencyGUI message, EntityPlayer entityPlayer) {
-        Minecraft.getMinecraft().displayGuiScreen(new GUISelectFrequency(message.getBlockPos(), message.getID(), message.getEffect().getRegistryName().toString(), message.getParticleEffect().getRegistryName().toString()));
-
+    public void handlePacket(PacketOpenSetFrequencyGUI message, MessageContext ctx) {
+        Minecraft.getMinecraft().displayGuiScreen(new GUISelectFrequency2(message.getBlockPos(), message.getID(), message.getEffect(), message.getParticleEffect()));
     }
 }

@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:+'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:+"
     }
 }
@@ -20,7 +20,14 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 def buildVersion = "${mod_verison}"
 
+def ENV = System.getenv()
+if (ENV.BUILD_NUMBER) {
+    buildVersion = buildVersion + "." + "${System.getenv().BUILD_NUMBER}"
+} else {
+    buildVersion = buildVersion + "localbeta"
+}
 
+<<<<<<< Updated upstream
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
     buildVersion = buildVersion + "." + "${System.getenv().BUILD_NUMBER}"
@@ -28,6 +35,8 @@ if (ENV.BUILD_NUMBER) {
     buildVersion = buildVersion + ".0-localbeta"
 }
 
+=======
+>>>>>>> Stashed changes
 version = "${minecraft_version}-" + buildVersion + "-universal"
 
 group= "com.unrealdinnerbone.${mod_name}"
@@ -72,12 +81,8 @@ repositories {
 }
 
 dependencies {
-    try {
-        compile project(":Yaum")
-    } catch (Exception ignored) {
-        files "libs/yaum-1.12.2-4.1.0-universal.jar"
-    }
-
+    compile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.22-13"
+    compile project(':Yaum')
 }
 
 

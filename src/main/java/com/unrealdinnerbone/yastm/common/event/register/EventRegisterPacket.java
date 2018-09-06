@@ -1,19 +1,19 @@
 package com.unrealdinnerbone.yastm.common.event.register;
 
-import com.unrealdinnerbone.yastm.lib.Reference;
+import com.unrealdinnerbone.yastm.Yastm;
 import com.unrealdinnerbone.yastm.packet.PacketOpenSetFrequencyGUI;
 import com.unrealdinnerbone.yastm.packet.PacketSetFrequency;
-import com.unrealdinnerbone.yaum.api.event.PacketRegisterEvent;
+import com.unrealdinnerbone.yaum.common.network.PacketRegisterEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
-public class EventRegisterPackets
+@Mod.EventBusSubscriber(modid = Yastm.MOD_ID)
+public class EventRegisterPacket
 {
     @SubscribeEvent
     public static void registerPackets(PacketRegisterEvent event) {
-        event.registerMessage(PacketOpenSetFrequencyGUI.class, Side.CLIENT);
-        event.registerMessage(PacketSetFrequency.class, Side.SERVER);
+        event.registerPacket(PacketOpenSetFrequencyGUI.class, Side.CLIENT);
+        event.registerPacket(PacketSetFrequency.class, Side.SERVER);
     }
 }

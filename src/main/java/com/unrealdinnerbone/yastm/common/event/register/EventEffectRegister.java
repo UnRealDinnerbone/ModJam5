@@ -1,7 +1,9 @@
 package com.unrealdinnerbone.yastm.common.event.register;
 
+import com.unrealdinnerbone.yastm.Yastm;
 import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
-import com.unrealdinnerbone.yastm.lib.Reference;
+import com.unrealdinnerbone.yastm.api.TelerporterEffect;
+import com.unrealdinnerbone.yastm.common.effect.RiseEffect;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -10,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static net.minecraft.util.EnumParticleTypes.*;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Yastm.MOD_ID)
 public class EventEffectRegister {
 
     @SubscribeEvent
@@ -27,12 +29,26 @@ public class EventEffectRegister {
         registerEffect(event, REDSTONE);
     }
 
+    @SubscribeEvent
+    public static void registerEffectAgain(RegistryEvent.Register<TelerporterEffect> effectRegistryEvent) {
+        effectRegistryEvent.getRegistry().register(new RiseEffect().setRegistryName(Yastm.MOD_ID, "rise"));
+    }
+
     public static void registerEffect(RegistryEvent.Register<TeleporterParticleEffect> event, EnumParticleTypes type) {
-        event.getRegistry().register(new TeleporterParticleEffect() {
-            @Override
-            public EnumParticleTypes getEffect() {
-                return type;
-            }
-        }.setRegistryName(new ResourceLocation(Reference.MOD_ID, type.name().toLowerCase())));
+        event.getRegistry().register(new BasicTeleporterParticleEffect(type).setRegistryName(new ResourceLocation(Yastm.MOD_ID, type.name().toLowerCase())));
+    }
+
+    public static class BasicTeleporterParticleEffect extends TeleporterParticleEffect {
+
+        private final EnumParticleTypes types;
+
+        public BasicTeleporterParticleEffect(EnumParticleTypes enumParticleTypes) {
+            this.types = enumParticleTypes;
+        }
+
+        public EnumParticleTypes getEffect() {
+            return types;
+        }
+
     }
 }
