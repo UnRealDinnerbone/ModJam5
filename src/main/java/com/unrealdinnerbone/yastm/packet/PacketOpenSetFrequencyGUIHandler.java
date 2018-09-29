@@ -10,7 +10,7 @@ public class PacketOpenSetFrequencyGUIHandler implements IMessageHandler<PacketO
 
     @Override
     public IMessage onMessage(PacketOpenSetFrequencyGUI message, MessageContext ctx) {
-        Minecraft.getMinecraft().addScheduledTask(() -> Yastm.getProxy().openGUI(message));
+        Minecraft.getMinecraft().addScheduledTask(() -> Yastm.getProxy().openFrequenyGUI(message));
         return null;
     }
 }
