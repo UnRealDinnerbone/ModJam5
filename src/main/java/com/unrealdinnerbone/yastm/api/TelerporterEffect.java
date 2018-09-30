@@ -8,11 +8,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class TelerporterEffect extends IForgeRegistryEntry.Impl<TelerporterEffect> {
 
-    public abstract int getTelerportTime();
+    public abstract void spawnEffect(EnumParticleTypes particleType, World world, DimBlockPos blockPos, Entity player, int count);
 
-    public abstract void spawnTeleportEffect(EnumParticleTypes particleType, World world, DimBlockPos blockPos, Entity player);
-
-    public abstract void spawnTelportArriveEffect(EnumParticleTypes particleType, World world, DimBlockPos blockPos, Entity player);
-
-    public abstract void spawnPreTeleportEffect(EnumParticleTypes particleType, World world, DimBlockPos blockPos, double count);
 }

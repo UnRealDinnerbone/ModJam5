@@ -3,9 +3,7 @@ package com.unrealdinnerbone.yastm.proxy;
 import com.unrealdinnerbone.yastm.Yastm;
 import com.unrealdinnerbone.yastm.common.command.CommandYastmTree;
 import com.unrealdinnerbone.yastm.packet.PacketOpenSetFrequencyGUI;
-import com.unrealdinnerbone.yastm.packet.PacketOpenSetFrequencyGUIHandler;
 import com.unrealdinnerbone.yastm.packet.PacketSetFrequency;
-import com.unrealdinnerbone.yastm.packet.PacketSetFrequencyHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -19,8 +17,8 @@ public class Proxy
     }
 
     public void onPreInit(FMLPreInitializationEvent event) {
-        Yastm.getNetworkWrapper().registerMessage(PacketOpenSetFrequencyGUIHandler.class, PacketOpenSetFrequencyGUI.class, 1, Side.CLIENT);
-        Yastm.getNetworkWrapper().registerMessage(PacketSetFrequencyHandler.class, PacketSetFrequency.class, 2, Side.SERVER);
+        Yastm.getNetworkWrapper().registerMessage(PacketOpenSetFrequencyGUI.class, PacketOpenSetFrequencyGUI.class, 1, Side.CLIENT);
+        Yastm.getNetworkWrapper().registerMessage(PacketSetFrequency.class, PacketSetFrequency.class, 2, Side.SERVER);
     }
 
     public void onInit(FMLInitializationEvent event) {

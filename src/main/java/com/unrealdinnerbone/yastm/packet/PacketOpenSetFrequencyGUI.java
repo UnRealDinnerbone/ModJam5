@@ -1,18 +1,21 @@
 package com.unrealdinnerbone.yastm.packet;
 
+import com.unrealdinnerbone.yastm.Yastm;
 import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
 import com.unrealdinnerbone.yastm.api.TelerporterEffect;
 import com.unrealdinnerbone.yastm.lib.DimBlockPos;
 import com.unrealdinnerbone.yastm.lib.YastmRegistries;
 import com.unrealdinnerbone.yastm.lib.util.RegistryUtils;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.nio.charset.StandardCharsets;
 
-public class PacketOpenSetFrequencyGUI implements IMessage {
+public class PacketOpenSetFrequencyGUI implements ISimplePacket<PacketOpenSetFrequencyGUI> {
 
     private DimBlockPos blockPos;
     private int ID;
@@ -73,4 +76,8 @@ public class PacketOpenSetFrequencyGUI implements IMessage {
         return particleEffect;
     }
 
+    @Override
+    public void handlePacket(PacketOpenSetFrequencyGUI message, MessageContext ctx) {
+        Minecraft.getMinecraft().addScheduledTask(() -> Yastm.getProxy().openFrequenyGUI(message));
+    }
 }

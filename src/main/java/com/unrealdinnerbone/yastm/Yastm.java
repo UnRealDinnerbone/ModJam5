@@ -59,16 +59,6 @@ public class Yastm {
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         proxy.onPostInit(event);
-//        if(event.getSide() == Side.CLIENT) {
-//            for (Class<? extends Entity> clazz : Minecraft.getMinecraft().getRenderManager().entityRenderMap.keySet()) {
-//                Render<? extends Entity> thng = Minecraft.getMinecraft().getRenderManager().entityRenderMap.get(clazz);
-//                if (thng instanceof RenderLiving) {
-//                    RenderJebHack renderJebHack = new RenderJebHack((RenderLiving) thng, ((RenderLiving) thng).getMainModel());
-//                    ((RenderLiving) thng).addLayer(renderJebHack);
-//                }
-//            }
-//
-//        }
     }
 
     @Mod.EventHandler
