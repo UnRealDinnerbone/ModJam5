@@ -1,18 +1,6 @@
 package com.unrealdinnerbone.yastm;
 
-import com.unrealdinnerbone.yastm.lib.LogHelper;
 import com.unrealdinnerbone.yastm.proxy.Proxy;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelCow;
-import net.minecraft.client.model.ModelSheep1;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderCow;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderSheep;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntitySheep;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -21,7 +9,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Yastm.MOD_ID, name = Yastm.MOD_NAME, version = Yastm.VERSION)
 public class Yastm {
@@ -40,14 +28,14 @@ public class Yastm {
     @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
     public static Proxy proxy;
 
-    private static LogHelper logHelper;
+    private static Logger logger;
     private static SimpleNetworkWrapper networkWrapper;
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event)
     {
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
-        logHelper = new LogHelper(event.getModLog());
+        logger = event.getModLog();
         proxy.onPreInit(event);
     }
 
@@ -66,8 +54,8 @@ public class Yastm {
         proxy.onServerStart(event);
     }
 
-    public LogHelper getLogHelper() {
-        return logHelper;
+    public static Logger getLogger() {
+        return logger;
     }
 
     public static Yastm getInstance() {

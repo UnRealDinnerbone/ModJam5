@@ -1,4 +1,4 @@
-package com.unrealdinnerbone.yastm.lib.util;
+package com.unrealdinnerbone.yastm.lib;
 
 import com.unrealdinnerbone.yastm.lib.DimBlockPos;
 import net.minecraft.entity.Entity;

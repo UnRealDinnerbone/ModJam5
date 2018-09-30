@@ -55,13 +55,13 @@ public class TelerporterData {
                 if(this.positions.get(id).size() < 2) {
                     this.positions.get(id).add(blockPos);
                 }else {
-                    Yastm.getInstance().getLogHelper().error("BlockPos {0} not add there are already two blockpos with the id {1}", blockPos.toString(), id);
+                    Yastm.getLogger().error("BlockPos {0} not add there are already two blockpos with the id {1}", blockPos.toString(), id);
                 }
             } else {
-                Yastm.getInstance().getLogHelper().error("BlockPos {0} is already ", blockPos.toString());
+                Yastm.getLogger().error("BlockPos {0} is already ", blockPos.toString());
             }
         } else {
-            Yastm.getInstance().getLogHelper().error("Telerported can't be added with ID of 0 {0}", blockPos.toString());
+            Yastm.getLogger().error("Telerported can't be added with ID of 0 {0}", blockPos.toString());
         }
     }
 

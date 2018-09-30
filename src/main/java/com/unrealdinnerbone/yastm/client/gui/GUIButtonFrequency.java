@@ -5,15 +5,15 @@ import net.minecraft.client.gui.GuiButton;
 public class GUIButtonFrequency extends GuiButton {
 
     private static int buttonID = 4000;
-    protected static final int WIDTH = 40;
     protected static final int HEIGHT = 20;
 
     private int amount;
 
-    public GUIButtonFrequency(int x, int y, int amount) {
-        super(buttonID++, x, y, WIDTH, HEIGHT, ((amount > 0 ? "+" : "") + amount));
+    public GUIButtonFrequency(int x, int y, int amount, int width) {
+        super(buttonID++, x, y, width, HEIGHT, ((amount > 0 ? "+" : "") + amount));
         this.amount = amount;
     }
+
 
     public static int getButtonID() {
         return buttonID;

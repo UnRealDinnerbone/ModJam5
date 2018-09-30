@@ -1,59 +1,64 @@
 package com.unrealdinnerbone.yastm.packet;
 
-import com.unrealdinnerbone.yastm.api.TelerporterEffect;
-import com.unrealdinnerbone.yastm.lib.DimBlockPos;
-import com.unrealdinnerbone.yastm.lib.YastmRegistries;
-import com.unrealdinnerbone.yastm.lib.util.RegistryUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import java.nio.charset.StandardCharsets;
+import java.awt.*;
 
 public class PacketSpawnParticle implements ISimplePacket<PacketSpawnParticle> {
 
-    private EnumParticleTypes particleType;
-    private TelerporterEffect telerporterEffect;
-    private DimBlockPos dimBlockPos;
-    private int count;
+    private BlockPos blockPos;
+    private Color color;
 
     public PacketSpawnParticle() {
 
     }
 
-    public PacketSpawnParticle(EnumParticleTypes particleType, TelerporterEffect telerporterEffect, DimBlockPos dimBlockPos, int count) {
-        this.particleType = particleType;
-        this.telerporterEffect = telerporterEffect;
-        this.dimBlockPos = dimBlockPos;
-        this.count = count;
+    public PacketSpawnParticle(Color color, BlockPos blockPos) {
+        this.color = color;
+        this.blockPos = blockPos;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.count = buf.readInt();
-        this.dimBlockPos = new DimBlockPos(BlockPos.fromLong(buf.readLong()), buf.readInt());
-        this.particleType = EnumParticleTypes.getParticleFromId(buf.readInt());
-        int leg = buf.readInt();
-        CharSequence charSequence = buf.readCharSequence(leg, StandardCharsets.UTF_8);
-        this.telerporterEffect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getEffectRegistry(), new ResourceLocation(charSequence.toString()));
+        this.color = new Color(buf.readInt());
+        this.blockPos = BlockPos.fromLong(buf.readLong());
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(count);
-        buf.writeLong(dimBlockPos.getBlockPos().toLong());
-        buf.writeInt(dimBlockPos.getDimID());
-        buf.writeInt(particleType.getParticleID());
-        CharSequence charSequence = new StringBuilder(telerporterEffect.getRegistryName().toString());
-        buf.writeInt(charSequence.length());
-        buf.writeCharSequence(charSequence, StandardCharsets.UTF_8);
+        buf.writeInt(color.getRGB());
+        buf.writeLong(blockPos.toLong());
     }
 
     @Override
-    public void handlePacket(PacketSpawnParticle message, MessageContext ctx) {
-        telerporterEffect.spawnEffect(particleType, Minecraft.getMinecraft().world, dimBlockPos, Minecraft.getMinecraft().player, count);
+    public IMessage onMessage(PacketSpawnParticle message, MessageContext ctx) {
+        BlockPos blockPos = message.blockPos;
+        Color color = message.color;
+        World world = Minecraft.getMinecraft().world;
+        for (int i = 0; i < 20; i += 3) {
+            for (double degree = 0.0d; degree < 2 * Math.PI; degree += 0.15) {
+                double xCord = blockPos.getX() + 0.5 + Math.cos(degree) / 1.75;
+                double yCord = blockPos.getY() + i * 0.1;
+                double zCore = blockPos.getZ() + 0.5 - Math.sin(degree) / 1.75;
+                ParticleRedstone particleRedstone = new ParticleRedstone(world, xCord, yCord,zCore, 0.01f, 0.1f, 0.01f);
+                particleRedstone.setRBGColorF(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F);
+                Minecraft.getMinecraft().effectRenderer.addEffect(particleRedstone);
+            }
+
+        }
+        return null;
+    }
+
+
+    public static class ParticleRedstone extends net.minecraft.client.particle.ParticleRedstone {
+
+        public ParticleRedstone(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, float p_i46349_8_, float p_i46349_9_, float p_i46349_10_) {
+            super(worldIn, xCoordIn, yCoordIn, zCoordIn, p_i46349_8_, p_i46349_9_, p_i46349_10_);
+        }
     }
 }

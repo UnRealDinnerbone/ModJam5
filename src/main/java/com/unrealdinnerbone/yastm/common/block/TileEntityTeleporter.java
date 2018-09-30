@@ -1,48 +1,43 @@
 package com.unrealdinnerbone.yastm.common.block;
 
 import com.unrealdinnerbone.yastm.Yastm;
-import com.unrealdinnerbone.yastm.api.TeleporterParticleEffect;
-import com.unrealdinnerbone.yastm.api.TelerporterEffect;
 import com.unrealdinnerbone.yastm.lib.DimBlockPos;
-import com.unrealdinnerbone.yastm.lib.util.RegistryUtils;
-import com.unrealdinnerbone.yastm.lib.YastmRegistries;
+import com.unrealdinnerbone.yastm.lib.TeleportationHelper;
+import com.unrealdinnerbone.yastm.packet.PacketSpawnParticle;
 import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
-import com.unrealdinnerbone.yastm.lib.util.TeleportationHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityTeleporter extends TileEntity implements ITickable {
 
+    private Color effectColor;
     private int countTime;
-    private TelerporterEffect telerporterEffect;
-    private TeleporterParticleEffect teleporterParticleEffect;
 
 
     public TileEntityTeleporter() {
-        this.telerporterEffect = RegistryUtils.getFirstValue(YastmRegistries.getFrequencyRegistry());
-        this.teleporterParticleEffect = RegistryUtils.getFirstValue(YastmRegistries.getParticleEffectsRegistry());
-        this.countTime = 0;
-    }
+        this.effectColor = new Color(69, 46, 255);
+   }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         NBTTagCompound myCompund = compound.copy();
         NBTTagCompound tagCompound = new NBTTagCompound();
-        tagCompound.setString("effect", this.telerporterEffect.getRegistryName().toString());
-        tagCompound.setString("peffect", this.teleporterParticleEffect.getRegistryName().toString());
+        tagCompound.setInteger("color", effectColor.getRGB());
         myCompund.setTag("yastm", tagCompound);
         return super.writeToNBT(myCompund);
     }
@@ -52,39 +47,22 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
         super.readFromNBT(compound);
         if(compound.hasKey("yastm")) {
             NBTTagCompound tagCompound = (NBTTagCompound) compound.getTag("yastm");
-            if(tagCompound.hasKey("effect")) {
-                String name = tagCompound.getString("effect");
-                this.telerporterEffect = RegistryUtils.getRegistryObjectFormName(YastmRegistries.getFrequencyRegistry(), new ResourceLocation(name));
+            if(tagCompound.hasKey("color")) {
+                int color = tagCompound.getInteger("color");
+                this.effectColor = new Color(color);
             } else {
-                this.telerporterEffect = RegistryUtils.getFirstValue(YastmRegistries.getFrequencyRegistry());
-            }
-            if(tagCompound.hasKey("peffect")) {
-                String name = tagCompound.getString("peffect");
-                this.teleporterParticleEffect = RegistryUtils.getObjectOrElseFirst(YastmRegistries.getParticleEffectsRegistry(), new ResourceLocation(name));
-            } else {
-                this.teleporterParticleEffect = RegistryUtils.getFirstValue(YastmRegistries.getParticleEffectsRegistry());
+                this.effectColor = new Color(207, 248, 255);
             }
 
         }
     }
 
-
-    public TelerporterEffect getTelerporterEffect() {
-        return telerporterEffect;
+    public Color getEffectColor() {
+        return effectColor;
     }
 
-    public void setTelerporterEffect(TelerporterEffect telerporterEffect) {
-        this.telerporterEffect = telerporterEffect;
-        markDirty();
-    }
-
-    public void setTeleporterParticleEffect(TeleporterParticleEffect teleporterParticleEffect) {
-        this.teleporterParticleEffect = teleporterParticleEffect;
-        markDirty();
-    }
-
-    public TeleporterParticleEffect getTeleporterParticleEffect() {
-        return teleporterParticleEffect;
+    public void setEffectColor(Color effectColor) {
+        this.effectColor = effectColor;
     }
 
     @Override
@@ -95,18 +73,19 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
                 YatmWorldSaveData worldSaveData = YatmWorldSaveData.get(world);
                 DimBlockPos pos = new DimBlockPos(this.pos, world.provider.getDimension());
                 if (worldSaveData.getTelerporterData().hasTwin(pos)) {
-                    telerporterEffect.spawnPreTeleportEffect(teleporterParticleEffect.getEffect(), world, pos, countTime++);
-                    if (countTime >= telerporterEffect.getTelerportTime()) {
+                    //Todo add config to allow the thing to be blah
+                    countTime++;
+                    if (countTime >= 20) {
                         DimBlockPos twinBlockPos = worldSaveData.getTelerporterData().getTwin(pos);
                         if (twinBlockPos != null) {
                             countTime = 0;
-                            telerporterEffect.spawnTeleportEffect(teleporterParticleEffect.getEffect(), world, pos, entities.get(0));
+                            spawnEffect(pos.getBlockPos());
                             TeleportationHelper.teleportPlayer(entities.get(0), twinBlockPos.getDimID(), twinBlockPos.getBlockPos().getX() + 0.5, twinBlockPos.getBlockPos().getY() + 0.125, twinBlockPos.getBlockPos().getZ() + 0.5);
-                            telerporterEffect.spawnTelportArriveEffect(teleporterParticleEffect.getEffect(), world, twinBlockPos, entities.get(0));
+                            spawnEffect(twinBlockPos.getBlockPos());
                             world.playSound(null, pos.getBlockPos(), SoundEvents.ENTITY_SHULKER_TELEPORT, SoundCategory.PLAYERS, 1, 1);
-                            entities.get(0).setSneaking(false);
+//                            entities.get(0).setSneaking(false);
                         } else {
-                            Yastm.getInstance().getLogHelper().error("This should not happen");
+                            Yastm.getLogger().error("This should not happen");
                         }
                     }
 
@@ -141,5 +120,10 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
 
     public int getCountTime() {
         return countTime;
+    }
+
+    private void spawnEffect(BlockPos blockPos) {
+        PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(effectColor, blockPos);
+        Yastm.getNetworkWrapper().sendToAllAround(packetSpawnParticle, new NetworkRegistry.TargetPoint(world.provider.getDimension(), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 32));
     }
 }
