@@ -17,7 +17,7 @@ public class ClientProxy extends Proxy {
 
     @Override
     public void openFrequenyGUI(PacketOpenSetFrequencyGUI message) {
-        Minecraft.getMinecraft().displayGuiScreen(new GUISelectFrequency2(message.getBlockPos(), message.getID()));
+        Minecraft.getMinecraft().displayGuiScreen(new GUISelectFrequency2(message.getBlockPos(), message.getID(), message.getColor()));
     }
 
 }

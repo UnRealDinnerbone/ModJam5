@@ -3,6 +3,7 @@ package com.unrealdinnerbone.yastm.world;
 import com.unrealdinnerbone.yastm.Yastm;
 import com.unrealdinnerbone.yastm.lib.TelerporterData;
 import com.unrealdinnerbone.yastm.lib.DimBlockPos;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;

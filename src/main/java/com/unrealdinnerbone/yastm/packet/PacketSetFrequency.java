@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import java.awt.*;
 import java.nio.charset.StandardCharsets;
 
 public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
@@ -18,22 +19,23 @@ public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
 
     private DimBlockPos blockPos;
     private int ID;
-    private String effectID;
-    private String particleID;
+    private Color color;
 
     public PacketSetFrequency() {
 
     }
 
-    public PacketSetFrequency(DimBlockPos pos, int id) {
+    public PacketSetFrequency(DimBlockPos pos, int id, Color color) {
         this.ID = id;
         this.blockPos = pos;
+        this.color = color;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
         this.blockPos = new DimBlockPos(BlockPos.fromLong(buf.readLong()), buf.readInt());
         ID = buf.readInt();
+        color = new Color(buf.readInt());
     }
 
     @Override
@@ -41,6 +43,7 @@ public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
         buf.writeLong(blockPos.getBlockPos().toLong());
         buf.writeInt(blockPos.getDimID());
         buf.writeInt(ID);
+        buf.writeInt(color.getRGB());
 
     }
 
@@ -50,14 +53,6 @@ public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
 
     public DimBlockPos getBlockPos() {
         return blockPos;
-    }
-
-    public String getEffectID() {
-        return effectID;
-    }
-
-    public String getParticleID() {
-        return particleID;
     }
 
     @Override
@@ -71,6 +66,7 @@ public class PacketSetFrequency implements ISimplePacket<PacketSetFrequency> {
                     yatmWorldSaveData.getTelerporterData().removeTeleporter(message.getBlockPos());
                     yatmWorldSaveData.getTelerporterData().addTeleporter(message.getID(), message.getBlockPos());
                     yatmWorldSaveData.save(world);
+                    ((TileEntityTeleporter) tileEntity).setEffectColor(message.color);
                 }
             }
         });

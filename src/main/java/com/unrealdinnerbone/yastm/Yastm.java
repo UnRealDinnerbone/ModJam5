@@ -1,6 +1,9 @@
 package com.unrealdinnerbone.yastm;
 
 import com.unrealdinnerbone.yastm.proxy.Proxy;
+import net.minecraft.command.CommandBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -21,9 +24,6 @@ public class Yastm {
     private static final String PROXY_BASE = "com.unrealdinnerbone.yastm.proxy.";
     private static final String CLIENT_PROXY = PROXY_BASE + "ClientProxy";
     private static final String SERVER_PROXY = PROXY_BASE + "Proxy";
-
-    @Mod.Instance(Yastm.MOD_ID)
-    public static Yastm INSTANCE;
 
     @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
     public static Proxy proxy;
@@ -58,10 +58,6 @@ public class Yastm {
         return logger;
     }
 
-    public static Yastm getInstance() {
-        return INSTANCE;
-    }
-
     public static SimpleNetworkWrapper getNetworkWrapper() {
         return networkWrapper;
     }
@@ -69,4 +65,5 @@ public class Yastm {
     public static Proxy getProxy() {
         return proxy;
     }
+
 }
