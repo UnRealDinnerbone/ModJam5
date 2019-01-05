@@ -1,18 +1,15 @@
 package com.unrealdinnerbone.yastm.proxy;
 
 import com.unrealdinnerbone.yastm.Yastm;
-import com.unrealdinnerbone.yastm.common.command.CommandYastmTree;
+import com.unrealdinnerbone.yastm.common.command.CommandListTelerporters;
 import com.unrealdinnerbone.yastm.packet.PacketOpenSetFrequencyGUI;
 import com.unrealdinnerbone.yastm.packet.PacketSetFrequency;
 import com.unrealdinnerbone.yastm.packet.PacketSpawnParticle;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.relauncher.Side;
-
-import java.awt.*;
 
 public class Proxy
 {
@@ -35,7 +32,7 @@ public class Proxy
     }
 
     public void onServerStart(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandYastmTree());
+        event.registerServerCommand(new CommandListTelerporters());
     }
 
 

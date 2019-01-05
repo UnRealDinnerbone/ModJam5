@@ -1,34 +1,38 @@
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            url = "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+	repositories {
+		jcenter()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:+"
-    }
+	}
 }
-
-apply plugin: 'maven'
-apply plugin: "com.matthewprenger.cursegradle"
-apply plugin: 'net.minecraftforge.gradle.forge'
 
 apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/generic/markdown-git-changelog.gradle'
 
-def buildVersion = "${mod_verison}"
-def ENV = System.getenv()
-if (ENV.BUILD_NUMBER) {
-    buildVersion = buildVersion + "." + "${System.getenv().BUILD_NUMBER}"
-}else {
-    buildVersion = buildVersion + ".0-localbeta"
-}
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
+apply plugin: "com.matthewprenger.cursegradle"
 
-version = "${minecraft_version}-" + buildVersion + "-universal"
+
+
+def ENV = System.getenv()
+def buildNumber = ENV.BUILD_NUMBER ? "${ENV.BUILD_NUMBER}" : "BETA"
+version = "${minecraft_version}-" + "${mod_verison}" + buildNumber +"-universal"
+
+
+def API_KEY = ENV.CURSE_API_KEY ? "${ENV.CURSE_API_KEY}" : project.curse_api_key
 
 group= "com.unrealdinnerbone.${mod_name}"
 archivesBaseName = "${mod_name}"
@@ -42,51 +46,32 @@ minecraft {
     mappings = "${forge_mappings}"
     useDepAts = true
 
-    replace "@VERSION@", buildVersion
-    replaceIn "Reference.java"
-    replace "@VERSION@", buildVersion
-    replaceIn "mcmod.info"
+	replace "@VERSION@", version
+	replaceIn "Yastm.java"
 }
 
-processResources
-        {
-
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-                expand 'version': buildVersion, 'mcversion': "${minecraft_version}"
-            }
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-repositories {
-    maven {
-        name = "tterrag maven"
-        url = "http://maven.tterrag.com/"
-    }
-    maven {
-        name = "CoFH Maven"
-        url = "http://maven.covers1624.net"
-    }
+processResources {
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
+		expand 'version': version, 'mcversion': "${minecraft_version}"
+	}
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'mcmod.info'
+	}
 }
-
-dependencies {
-    compile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.22-13"
-}
-
-
+	
 curseforge {
-    apiKey = project.curse_api_key
-    project {
-        id = project.curse_project_id
-        changelogType = "markdown"
-        changelog = file('changelog.md')
-        releaseType = project.release_type
-        mainArtifact(jar) {
-            displayName = version
-        }
-    }
+	apiKey = API_KEY
+	project {
+		id = project.curse_project_id
+		changelogType = "markdown"
+		addGameVersion "${minecraft_version}"
+		changelog = getGitChangelog
+		releaseType = project.release_type
+		mainArtifact(jar) {
+			displayName = "${mod_name}" + "-" + version
+		}
+	}
 }
 
 

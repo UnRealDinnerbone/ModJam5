@@ -8,6 +8,7 @@ import com.unrealdinnerbone.yastm.world.YatmWorldSaveData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
@@ -18,28 +19,31 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityTeleporter extends TileEntity implements ITickable {
 
     private Color effectColor;
+    private EntityPlayer lastPlayer;
+
     private int countTime;
 
 
     public TileEntityTeleporter() {
         this.effectColor = new Color(69, 46, 255);
+        this.countTime = 0;
    }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        NBTTagCompound myCompund = compound.copy();
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        tagCompound.setInteger("color", effectColor.getRGB());
-        myCompund.setTag("yastm", tagCompound);
-        return super.writeToNBT(myCompund);
+        NBTTagCompound baseCompound = compound.copy();
+        NBTTagCompound modCompound = new NBTTagCompound();
+        modCompound .setInteger("color", effectColor.getRGB());
+        baseCompound.setTag("yastm", modCompound);
+        return super.writeToNBT(baseCompound);
     }
 
     @Override
@@ -68,22 +72,28 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
     @Override
     public void update() {
         if (!world.isRemote) {
-            List<EntityPlayer> entities = scanForEntiesOnBlock();
-            if (entities.size() > 0) {
+            EntityPlayer entityPlayer = getPlayerOnBlock();
+            if (entityPlayer != null) {
+                if(lastPlayer != null && entityPlayer.getUniqueID().equals(lastPlayer.getUniqueID())) {
+                    return;
+                }
                 YatmWorldSaveData worldSaveData = YatmWorldSaveData.get(world);
                 DimBlockPos pos = new DimBlockPos(this.pos, world.provider.getDimension());
                 if (worldSaveData.getTelerporterData().hasTwin(pos)) {
                     //Todo add config to allow the thing to be blah
                     countTime++;
-                    if (countTime >= 20) {
+
+                    if (this.countTime >= 20) {
                         DimBlockPos twinBlockPos = worldSaveData.getTelerporterData().getTwin(pos);
                         if (twinBlockPos != null) {
-                            countTime = 0;
-                            spawnEffect(pos.getBlockPos());
-                            TeleportationHelper.teleportPlayer(entities.get(0), twinBlockPos.getDimID(), twinBlockPos.getBlockPos().getX() + 0.5, twinBlockPos.getBlockPos().getY() + 0.125, twinBlockPos.getBlockPos().getZ() + 0.5);
-                            spawnEffect(twinBlockPos.getBlockPos());
-                            world.playSound(null, pos.getBlockPos(), SoundEvents.ENTITY_SHULKER_TELEPORT, SoundCategory.PLAYERS, 1, 1);
-//                            entities.get(0).setSneaking(false);
+                            this.countTime = 0;
+                            this.onPlayerTelerported(entityPlayer);
+                            TeleportationHelper.teleportPlayer(entityPlayer, twinBlockPos.getDimID(), twinBlockPos.getBlockPos().getX() + 0.5, twinBlockPos.getBlockPos().getY() + 0.125, twinBlockPos.getBlockPos().getZ() + 0.5);
+                            TileEntity tileEntity = world.getTileEntity(twinBlockPos.getBlockPos());
+                            if(tileEntity instanceof TileEntityTeleporter) {
+                                TileEntityTeleporter tileEntityTeleporter = (TileEntityTeleporter) tileEntity;
+                                tileEntityTeleporter.onPlayerTelerported(entityPlayer);
+                            }
                         } else {
                             Yastm.getLogger().error("This should not happen");
                         }
@@ -92,15 +102,22 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
                 }
             } else {
                 this.countTime = 0;
+                this.lastPlayer = null;
             }
         }
     }
 
-    public List<EntityPlayer> scanForEntiesOnBlock() {
+    public void onPlayerTelerported(EntityPlayer entityPlayer) {
+        world.playSound(null, pos, SoundEvents.ENTITY_SHULKER_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+        spawnEffect(pos);
+        this.lastPlayer = entityPlayer;
+
+    }
+
+    @Nullable
+    public EntityPlayer getPlayerOnBlock() {
         List<EntityPlayer> entityPlayers = getWorld().getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(getPos(), getPos().add(1, 2, 1)));
-        List<EntityPlayer> goodEnties = new ArrayList<>();
-        entityPlayers.stream().filter(entity ->  !(entity == null || entity.isDead || entity.isRiding() || !entity.isSneaking())).forEach(goodEnties::add);
-        return goodEnties;
+        return entityPlayers.stream().findFirst().filter(entity ->  !(entity.isDead || entity.isRiding() || !entity.isSneaking())).orElse(null);
     }
 
 
@@ -113,7 +130,7 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         super.onDataPacket(net, pkt);
         readFromNBT(pkt.getNbtCompound());
     }
@@ -123,7 +140,11 @@ public class TileEntityTeleporter extends TileEntity implements ITickable {
     }
 
     private void spawnEffect(BlockPos blockPos) {
-        PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(effectColor, blockPos);
+        PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(blockPos, effectColor);
         Yastm.getNetworkWrapper().sendToAllAround(packetSpawnParticle, new NetworkRegistry.TargetPoint(world.provider.getDimension(), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 32));
+    }
+
+    public boolean canTeleport(@Nonnull EntityPlayer entityPlayer) {
+        return lastPlayer == null || !entityPlayer.getUniqueID().equals(lastPlayer.getUniqueID());
     }
 }

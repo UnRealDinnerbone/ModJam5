@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class GUISelectFrequency2 extends GuiScreen {
@@ -16,16 +17,29 @@ public class GUISelectFrequency2 extends GuiScreen {
 
     private final DimBlockPos DIM_BLOCK_POS;
 
+
     private final int ID_OLD;
+    private final Color COLOR;
+
+    private int r;
+    private int g;
+    private int b;
 
 
     //Todo allow users to type in ID's
     private GuiTextField frequencyID;
+    private GUIColorSlider redColorSlider;
+    private GUIColorSlider blueColorSlider;
+    private GUIColorSlider greenColorSlider;
 
-
-    public GUISelectFrequency2(DimBlockPos blockPos, int id) {
+    public GUISelectFrequency2(DimBlockPos blockPos, int id, int color) {
         this.DIM_BLOCK_POS = blockPos;
         this.ID_OLD = id;
+        Color color1 = new Color(color);
+        this.COLOR = color1;
+        this.r = color1.getRed();
+        this.g = color1.getGreen();
+        this.b = color1.getBlue();
     }
 
     @Override
@@ -42,6 +56,9 @@ public class GUISelectFrequency2 extends GuiScreen {
         this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20, +1, 20));
         this.addButton(new GUIButtonFrequency(centerX + (40 * 4) + offest, height + 20, +10, 25));
         this.addButton(new GUIButtonFrequency(centerX + (40 * 5) + offest, height + 20, +100, 30));
+        this.redColorSlider = this.addButton(new GUIColorSlider(15, centerX, 50, COLOR.getRed(), (guiSolder -> r = guiSolder.getValueInt())));
+        this.greenColorSlider = this.addButton(new GUIColorSlider(16, centerX, 75, COLOR.getGreen(), (guiSolder -> g = guiSolder.getValueInt())));
+        this.blueColorSlider = this.addButton(new GUIColorSlider(17, centerX, 100, COLOR.getBlue(), (guiSolder -> b = guiSolder.getValueInt())));
 
         this.frequencyID = new GuiTextField(10, this.fontRenderer, width - 36, height - 10, 72, 20);
         this.frequencyID.setText(String.valueOf(ID_OLD));
@@ -99,6 +116,8 @@ public class GUISelectFrequency2 extends GuiScreen {
         drawModalRectWithCustomSizedTexture(centerX, centerY, 0, 0, 256, 158, 256, 158);
         this.frequencyID.drawTextBox();
         super.drawScreen(mouseX, mouseY, partialTicks);
+        Color color = new Color(r, g, b);
+        this.drawGradientRect(10, 10 ,20,20,color.getRGB(), color.getRGB());
         this.frequencyID.setFocused(true);
         this.frequencyID.setEnabled(true);
 
@@ -106,7 +125,7 @@ public class GUISelectFrequency2 extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        Yastm.getNetworkWrapper().sendToServer(new PacketSetFrequency(DIM_BLOCK_POS, getID()));
+        Yastm.getNetworkWrapper().sendToServer(new PacketSetFrequency(DIM_BLOCK_POS, getID(), new Color(r, g, b)));
     }
 
     @Override

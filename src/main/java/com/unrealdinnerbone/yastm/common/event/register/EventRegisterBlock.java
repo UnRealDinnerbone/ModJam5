@@ -6,6 +6,7 @@ import com.unrealdinnerbone.yastm.common.block.TileEntityTeleporter;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,5 +24,4 @@ public class EventRegisterBlock {
 
         GameRegistry.registerTileEntity(TileEntityTeleporter.class, new ResourceLocation(Yastm.MOD_ID, "te_teleporter"));
     }
-
 }

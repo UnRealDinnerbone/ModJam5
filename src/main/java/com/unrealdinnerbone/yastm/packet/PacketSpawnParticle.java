@@ -6,6 +6,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 
@@ -18,7 +20,7 @@ public class PacketSpawnParticle implements ISimplePacket<PacketSpawnParticle> {
 
     }
 
-    public PacketSpawnParticle(Color color, BlockPos blockPos) {
+    public PacketSpawnParticle(BlockPos blockPos, Color color) {
         this.color = color;
         this.blockPos = blockPos;
     }
@@ -35,11 +37,12 @@ public class PacketSpawnParticle implements ISimplePacket<PacketSpawnParticle> {
         buf.writeLong(blockPos.toLong());
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public IMessage onMessage(PacketSpawnParticle message, MessageContext ctx) {
         BlockPos blockPos = message.blockPos;
-        Color color = message.color;
         World world = Minecraft.getMinecraft().world;
+        Color color = message.color;
         for (int i = 0; i < 20; i += 3) {
             for (double degree = 0.0d; degree < 2 * Math.PI; degree += 0.15) {
                 double xCord = blockPos.getX() + 0.5 + Math.cos(degree) / 1.75;
@@ -57,8 +60,8 @@ public class PacketSpawnParticle implements ISimplePacket<PacketSpawnParticle> {
 
     public static class ParticleRedstone extends net.minecraft.client.particle.ParticleRedstone {
 
-        public ParticleRedstone(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, float p_i46349_8_, float p_i46349_9_, float p_i46349_10_) {
-            super(worldIn, xCoordIn, yCoordIn, zCoordIn, p_i46349_8_, p_i46349_9_, p_i46349_10_);
+        public ParticleRedstone(World worldIn, double x, double y, double z, float xSpeed, float ySpeed, float zSpeed) {
+            super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
         }
     }
 }

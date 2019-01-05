@@ -50,19 +50,15 @@ public class DimBlockPos {
 
     public NBTTagCompound toTagCompound() {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        nbttagcompound.setInteger("x", this.blockPos.getX());
-        nbttagcompound.setInteger("y", this.blockPos.getY());
-        nbttagcompound.setInteger("z", this.blockPos.getZ());
-        nbttagcompound.setInteger("d", dimID);
+        nbttagcompound.setLong("blockPos", blockPos.toLong());
+        nbttagcompound.setInteger("dimID", dimID);
         return nbttagcompound;
     }
 
     public static DimBlockPos fromTagCompound(NBTTagCompound tagCompound) {
-        int x = tagCompound.getInteger("x");
-        int y = tagCompound.getInteger("y");
-        int z = tagCompound.getInteger("z");
-        int dimID = tagCompound.getInteger("d");
-        return new DimBlockPos(new BlockPos(x, y,z ), dimID);
+        BlockPos blockPos = BlockPos.fromLong(tagCompound.getLong("blockPos"));
+        int dimID = tagCompound.getInteger("dimID");
+        return new DimBlockPos(blockPos, dimID);
 
     }
 }
