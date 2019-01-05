@@ -5,7 +5,7 @@ workflow "Upload CurseForge" {
 
 action "Build/Upload Jar to CurseForge" {
   uses = "actions/aws/cli@8d31870"
-  runs = "gradlew curseforge"
+  runs = "./gradlew.sh curseforge"
   env = {
     BUILD_NUMBER = "1"
   }
