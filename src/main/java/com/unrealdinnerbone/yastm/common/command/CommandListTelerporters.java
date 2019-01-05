@@ -19,7 +19,7 @@ public class CommandListTelerporters extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "listTelerporters {id}";
+        return "yastm.commmands.listTelerporters.usage";
     }
 
     @Override
@@ -46,7 +46,10 @@ public class CommandListTelerporters extends CommandBase {
     }
     private void printInfo(ICommandSender commandSender, int id, List<DimBlockPos> dimBlockPosList) {
         TextComponentString textComponents = new TextComponentString("ID: " + id);
-        dimBlockPosList.stream().map(dimBlockPos -> " " + dimBlockPos.toString()).forEach(textComponents::appendText);
+        for (DimBlockPos dimBlockPos : dimBlockPosList) {
+            textComponents.appendText("\n   ");
+            textComponents.appendText("Dim: "+ dimBlockPos.getDimID() + ", X: " + dimBlockPos.getBlockPos().getX() + ", Y: " + dimBlockPos.getBlockPos().getY() + ", Z: " + dimBlockPos.getBlockPos().getZ());
+        }
         commandSender.sendMessage(textComponents);
 
     }

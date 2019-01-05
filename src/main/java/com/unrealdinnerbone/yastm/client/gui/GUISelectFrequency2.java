@@ -56,9 +56,9 @@ public class GUISelectFrequency2 extends GuiScreen {
         this.addButton(new GUIButtonFrequency(centerX + (40 * 3) + offest, height + 20, +1, 20));
         this.addButton(new GUIButtonFrequency(centerX + (40 * 4) + offest, height + 20, +10, 25));
         this.addButton(new GUIButtonFrequency(centerX + (40 * 5) + offest, height + 20, +100, 30));
-        this.redColorSlider = this.addButton(new GUIColorSlider(15, 75, 50, COLOR.getRed(), (guiSolder -> r = guiSolder.getValueInt())));
-        this.greenColorSlider = this.addButton(new GUIColorSlider(16, 75, 75, COLOR.getGreen(), (guiSolder -> g = guiSolder.getValueInt())));
-        this.blueColorSlider = this.addButton(new GUIColorSlider(17, 75, 100, COLOR.getBlue(), (guiSolder -> b = guiSolder.getValueInt())));
+        this.redColorSlider = this.addButton(new GUIColorSlider(15, centerX, 50, COLOR.getRed(), (guiSolder -> r = guiSolder.getValueInt())));
+        this.greenColorSlider = this.addButton(new GUIColorSlider(16, centerX, 75, COLOR.getGreen(), (guiSolder -> g = guiSolder.getValueInt())));
+        this.blueColorSlider = this.addButton(new GUIColorSlider(17, centerX, 100, COLOR.getBlue(), (guiSolder -> b = guiSolder.getValueInt())));
 
         this.frequencyID = new GuiTextField(10, this.fontRenderer, width - 36, height - 10, 72, 20);
         this.frequencyID.setText(String.valueOf(ID_OLD));
