@@ -1,13 +1,13 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "minecraft:blocks/stone_slab_top",
-    "bottom": "minecraft:blocks/stone_slab_top",
+    "particle": "minecraft:block/smooth_stone",
+    "bottom": "minecraft:block/smooth_stone",
     "top": "yastm:blocks/teleporter_top",
-    "east": "minecraft:blocks/stone_slab_side",
-    "west": "minecraft:blocks/stone_slab_side",
-    "north": "minecraft:blocks/stone_slab_side",
-    "south": "minecraft:blocks/stone_slab_side"
+    "east": "minecraft:block/smooth_stone_slab_side",
+    "west": "minecraft:block/smooth_stone_slab_side",
+    "north": "minecraft:block/smooth_stone_slab_side",
+    "south": "minecraft:block/smooth_stone_slab_side"
   },
   "elements": [
     {

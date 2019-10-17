@@ -1,78 +1,103 @@
 buildscript {
-	repositories {
-		jcenter()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/snapshots/"
-		}
-	}
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:+"
-	}
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
 }
+
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/master/generic/markdown-git-changelog.gradle'
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven'
-apply plugin: "com.matthewprenger.cursegradle"
-
-
 
 def ENV = System.getenv()
-def buildNumber = ENV.BUILD_NUMBER ? "${ENV.BUILD_NUMBER}" : "BETA"
-version = "${minecraft_version}-" + "${mod_verison}" + buildNumber +"-universal"
+def buildVersion = ENV.BUILD_NUMBER ? "2.0.0.${ENV.BUILD_NUMBER}" : "2.0.0.beta"
 
+version = "1.14.4-" + buildVersion + "-universal"
 
-def API_KEY = ENV.CURSE_API_KEY ? "${ENV.CURSE_API_KEY}" : project.curse_api_key
+group = 'com.unrealdinnerbone.yastm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'yastm'
 
-group= "com.unrealdinnerbone.${mod_name}"
-archivesBaseName = "${mod_name}"
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    version = "${minecraft_version}-${forge_version}"
-    runDir = "run"
-    mappings = "${forge_mappings}"
-    useDepAts = true
+    mappings channel: 'snapshot', version: "${mcp_mappings}"
 
-	replace "@VERSION@", version
-	replaceIn "Yastm.java"
+    if(!project.hasProperty("devWorkspace")) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }else {
+        if(project(":zworkspace") != null) {
+            Project project = project(":zworkspace")
+            accessTransformer = project.file('src/main/resources/META-INF/accesstransformer2.cfg')
+        }
+    }
+
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+        }
+    }
 }
 
-processResources {
-	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-		expand 'version': version, 'mcversion': "${minecraft_version}"
-	}
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
-	}
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
-	
+
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "tramplestopper",
+            "Specification-Vendor": "examplemodsareus",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"examplemodsareus",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
 curseforge {
-	apiKey = API_KEY
-	project {
-		id = project.curse_project_id
-		changelogType = "markdown"
-		addGameVersion "${minecraft_version}"
-		changelog = getGitChangelog
-		releaseType = project.release_type
-		mainArtifact(jar) {
-			displayName = "${mod_name}" + "-" + version
-		}
-	}
+    if (project.hasProperty('unreal_curse_api_key')){
+        apiKey = project.getProperty('unreal_curse_api_key')
+    }
+    project {
+        id = "297028"
+        changelog = getGitChangelog
+        changelogType = 'markdown'
+        releaseType = 'release'
+        addGameVersion '1.14.4'
+        addGameVersion 'Forge'
+    }
 }
-
-
-
