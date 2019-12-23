@@ -16,7 +16,6 @@ public class Yastm {
 
     public Yastm() {
         LOGGER.info("Hello, World!");
-        LOGGER.debug(Minecraft.getInstance());
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
     }
 
