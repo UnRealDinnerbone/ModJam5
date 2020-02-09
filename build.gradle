@@ -22,9 +22,9 @@ apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Co
 
 
 def ENV = System.getenv()
-def buildVersion = ENV.BUILD_NUMBER ? "2.0.0.${ENV.BUILD_NUMBER}" : "2.0.0.beta"
+def buildVersion = ENV.BUILD_NUMBER ? "2.1.0.${ENV.BUILD_NUMBER}" : "2.0.0.beta"
 
-version = "1.14.4-" + buildVersion + "-universal"
+version = "${minecraft_version}" + "-" + buildVersion + "-universal"
 
 group = 'com.unrealdinnerbone.yastm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'yastm'
@@ -100,7 +100,7 @@ curseforge {
         changelog = getGitChangelog
         changelogType = 'markdown'
         releaseType = 'release'
-        addGameVersion '1.14.4'
+        addGameVersion "${minecraft_version}"
         addGameVersion 'Forge'
     }
 }
