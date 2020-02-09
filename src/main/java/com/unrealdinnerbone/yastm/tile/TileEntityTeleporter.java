@@ -113,7 +113,7 @@ public class TileEntityTeleporter extends TileEntity implements ITickableTileEnt
 //
     public PlayerEntity getPlayerOnBlock() {
         List<PlayerEntity> entityPlayers = getWorld().getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(getPos(), getPos().add(1, 2, 1)));
-        return entityPlayers.stream().findFirst().filter(Entity::isSneaking).orElse(null);
+        return entityPlayers.stream().findFirst().filter(Entity::isCrouching).orElse(null);
     }
 //
 //

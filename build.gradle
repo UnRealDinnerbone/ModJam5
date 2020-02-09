@@ -68,6 +68,9 @@ minecraft {
         }
     }
 }
+repositories {
+    maven { url "https/maven.tterrag.com/" }
+}
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
